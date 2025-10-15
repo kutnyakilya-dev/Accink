@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Биржевой Симулятор</title>
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Шрифты для более профессионального вида -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #111827; /* Gray-900 */
+            --color-card: #1f2937; /* Gray-800 */
+            --color-text: #f3f4f6; /* Gray-100 */
+            --color-primary: #3b82f6; /* Blue-500 */
+            --color-success: #10b981; /* Emerald-500 */
+            --color-danger: #ef4444; /* Red-500 */
+            --color-warning: #f59e0b; /* Amber-500 */
+            --color-business: #f97316; /* Orange-500 */
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .container-app {
+            width: 100%;
+            max-width: 1200px;
+            /* Добавляем отступ снизу, чтобы контент не перекрывался нижней навигацией на мобильных устройствах */
+            padding-bottom: 70px; 
+        }
+
+        .card {
+            background-color: var(--color-card);
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Custom button styling for interactivity */
+        .btn-action {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-buy {
+            background-color: var(--color-success);
+            color: var(--color-bg);
+        }
+        
+        .btn-open-business {
+            background-color: var(--color-business);
+            color: var(--color-bg);
+        }
+        
+        .btn-sell-business {
+            background-color: #843b0d; /* Darker Orange */
+            color: var(--color-text);
+        }
+
+        .btn-buy:hover:not(:disabled) {
+            background-color: #059669; /* Emerald-600 */
+            transform: translateY(-1px);
+        }
+        
+        .btn-open-business:hover:not(:disabled) {
+            background-color: #ea580c; /* Orange-600 */
+            transform: translateY(-1px);
+        }
+        
+        .btn-sell-business:hover:not(:disabled) {
+            background-color: #9a4c16; /* Darker Orange Hover */
+            transform: translateY(-1px);
+        }
+
+
+        .btn-sell {
+            background-color: var(--color-danger);
+            color: var(--color-text);
+        }
+        
+        /* Дополнительный стиль для кнопки "Продать ВСЕ" */
+        .btn-sell-all {
+            background-color: #991b1b; /* Red-800 */
+            color: var(--color-text);
+        }
+
+        .btn-sell:hover:not(:disabled) {
+            background-color: #dc2626; /* Red-600 */
+            transform: translateY(-1px);
+        }
+        
+        .btn-sell-all:hover:not(:disabled) {
+            background-color: #b91c1c; /* Red-700 */
+            transform: translateY(-1px);
+        }
+        
+        .btn-action:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+
+        /* Stock price animation for change */
+        .price-up {
+            animation: flash-green 0.5s ease-out;
+            color: var(--color-success);
+        }
+        .price-down {
+            animation: flash-red 0.5s ease-out;
+            color: var(--color-danger);
+        }
+
+        @keyframes flash-green {
+            0% { background-color: rgba(16, 185, 129, 0.3); }
+            100% { background-color: transparent; }
+        }
+
+        @keyframes flash-red {
+            0% { background-color: rgba(239, 68, 68, 0.3); }
+            100% { background-color: transparent; }
+        }
+
+        /* Модальное окно сообщения теперь сверху по центру */
+        #message-box {
+            position: fixed;
+            top: 20px; /* Позиция сверху */
+            left: 50%; /* Центрирование */
+            transform: translateX(-50%); /* Точное центрирование */
+            max-width: 90%;
+            z-index: 50;
+        }
+
+        /* Делаем навигацию невидимой на больших экранах, где она не нужна */
+        @media (min-width: 1024px) {
+            #nav-bar {
+                display: none !important;
+            }
+        }
+
+        .nav-item-active {
+            color: var(--color-primary);
+        }
+        
+        /* Стиль для всплывающего значка дохода */
+        .income-badge {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -10px);
+            background-color: var(--color-success);
+            color: var(--color-bg);
+            padding: 2px 6px;
+            border-radius: 9999px; /* Full rounded */
+            font-size: 0.7rem;
+            font-weight: 900;
+            white-space: nowrap;
+            opacity: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+<div id="loading-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center z-50">
+    <div class="text-xl font-semibold flex items-center space-x-2">
+        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Загрузка рынка...
+    </div>
+</div>
+
+<div class="container-app hidden" id="app-container">
+    <header class="mb-6 pb-4 border-b border-gray-700">
+        <h1 class="text-3xl font-bold text-white mb-2">Биржевой Симулятор</h1>
+        <p class="text-gray-400">Торгуйте, следите за ценами и управляйте своим портфелем.</p>
+    </header>
+
+    <!-- Информация о пользователе и балансе -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="card md:col-span-2">
+            <h2 class="text-xl font-semibold mb-3 text-blue-400">Мой Портфель</h2>
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                <div class="mb-3 sm:mb-0">
+                    <p class="text-gray-400 text-sm">Баланс (UAH)</p>
+                    <p id="player-balance" class="text-3xl font-bold text-white">0.00</p>
+                    <!-- Информация о пассивном доходе -->
+                    <p id="passive-income-info" class="text-sm font-medium text-green-500 mt-1">Доход (Квартиры): 0.00 грн / 5 сек</p>
+                    <!-- ОБНОВЛЕНО: 6 сек -->
+                    <p id="business-income-info" class="text-sm font-medium text-orange-500 mt-1">Доход (Бизнес): 0.00 грн / 6 сек</p>
+                </div>
+                <div>
+                    <p class="text-gray-400 text-sm">Ваш ID:</p>
+                    <p id="user-id" class="text-sm font-mono text-gray-400 truncate"></p>
+                </div>
+            </div>
+        </div>
+        <div class="card flex flex-col justify-center">
+             <h2 class="text-xl font-semibold mb-2 text-blue-400">Общее Состояние</h2>
+             <p class="text-gray-400 text-sm">Обновление цен / Лимитов акций:</p>
+             <p id="limit-countdown" class="text-xl font-bold text-yellow-400">00:00</p>
+             <p class="text-gray-400 text-sm mt-3">Пассивный доход (Квартиры) через:</p>
+             <p id="income-countdown" class="text-xl font-bold text-green-400">00</p>
+             <!-- НОВЫЙ ЭЛЕМЕНТ: Таймер дохода от бизнеса -->
+             <p class="text-gray-400 text-sm mt-3">Доход от Бизнеса через:</p>
+             <p id="business-countdown" class="text-xl font-bold text-orange-400">00</p>
+        </div>
+    </div>
+
+    <!-- Раздел рынка, квартир, бизнеса и инвентаря, теперь управляется JS для табов -->
+    <div id="main-content-sections">
+        
+        <!-- Секция Рынка (по умолчанию видна) -->
+        <div id="market-section" class="main-content-section">
+            <div class="card mb-6 lg:mb-0">
+                <h2 class="text-2xl font-semibold mb-4">Биржа (Акции)</h2>
+                <div id="market-list" class="space-y-4">
+                    <p class="text-gray-500">Загрузка данных...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Секция Квартир (по умолчанию скрыта) -->
+        <div id="real-estate-section" class="main-content-section hidden">
+            <div class="card mb-6">
+                <h2 class="text-2xl font-semibold mb-4">Квартиры (Недвижимость)</h2>
+                <p class="text-gray-400 text-sm mb-4">
+                    Магазин обновляется каждые 3 минуты. Доступность ограничена!
+                    <span id="apartment-countdown" class="font-bold text-yellow-400 ml-2">00:00</span>
+                </p>
+                <div id="apartment-list" class="space-y-4">
+                    <p class="text-gray-500">Загрузка данных о недвижимости...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Секция Бизнеса (по умолчанию скрыта) -->
+        <div id="business-section" class="main-content-section hidden">
+            <div class="card mb-6">
+                <h2 class="text-2xl font-semibold mb-4">Бизнес</h2>
+                <!-- ОБНОВЛЕНО: 1% и 6 секунд -->
+                <p class="text-gray-400 mb-4">
+                    Инвестируйте в свой бизнес! Прибыль: <span class="font-bold text-orange-400">1% от вложений</span> каждые <span class="font-bold text-orange-400">6 секунд</span>.
+                    <span id="business-count" class="font-bold text-white ml-2">0/20</span>
+                </p>
+                
+                <!-- Форма открытия бизнеса -->
+                <div class="card bg-gray-900 mb-6">
+                    <h3 class="text-xl font-semibold mb-3">Открыть новый бизнес</h3>
+                    <div class="space-y-4">
+                        <input type="text" id="business-name-input" placeholder="Название бизнеса"
+                               class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-orange-500 focus:border-orange-500" />
+                        <!-- Убрано ограничение min="1" для инвестиций, но логика JS требует положительное число -->
+                        <input type="number" id="business-investment-input" placeholder="Сумма инвестиций (от 1 грн)"
+                               class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-orange-500 focus:border-orange-500" />
+                        <button id="open-business-btn" onclick="handleOpenBusiness()" class="btn-action btn-open-business w-full">
+                            Открыть Бизнес
+                        </button>
+                    </div>
+                </div>
+                
+                <h3 class="text-xl font-semibold mb-3">Мои Бизнесы</h3>
+                <div id="business-list" class="space-y-4">
+                    <p class="text-gray-500">У вас пока нет бизнесов.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Секция Инвентаря (по умолчанию скрыта) -->
+        <div id="inventory-section" class="main-content-section hidden">
+            <div class="card mb-6">
+                <h2 class="text-2xl font-semibold mb-4">Инвентарь</h2>
+                <div id="inventory-list" class="space-y-4">
+                    <p class="text-gray-500">Портфель пуст.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно сообщения (ПОЗИЦИЯ СВЕРХУ) -->
+<div id="message-box" class="fixed bg-gray-700 text-white p-4 rounded-lg shadow-xl hidden z-50"></div>
+
+<!-- Нижняя навигационная панель (видима только на мобильных устройствах) -->
+<footer id="nav-bar" class="fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 p-2 z-40">
+    <div class="flex justify-around max-w-lg mx-auto">
+        <!-- Кнопка Биржа -->
+        <button id="nav-market" onclick="showSection('market')" 
+                class="relative nav-item-active text-blue-400 p-2 rounded-lg hover:text-white transition-colors flex flex-col items-center text-xs">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+            Биржа
+        </button>
+        <!-- Кнопка Квартиры -->
+        <button id="nav-real-estate" onclick="showSection('real-estate')" 
+                class="relative text-gray-400 p-2 rounded-lg hover:text-white transition-colors flex flex-col items-center text-xs">
+            <!-- Иконка дома/недвижимости -->
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5a2 2 0 00-2 2v6a2 2 0 002 2h14a2 2 0 002-2v-6a2 2 0 00-2-2zM5 11V9a2 2 0 012-2h10a2 2 0 012 2v2M8 15h.01M16 15h.01"></path></svg>
+            Квартиры
+        </button>
+        <!-- Кнопка Бизнес (ОБНОВЛЕННАЯ ИКОНКА - ДВЕ КВАРТИРЫ) -->
+        <button id="nav-business" onclick="showSection('business')" 
+                class="relative text-gray-400 p-2 rounded-lg hover:text-white transition-colors flex flex-col items-center text-xs">
+            <!-- Стилизованная иконка двух домов (квартир) -->
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+                <!-- Левый дом (общий контур) -->
+                <path d="M4 22V10L10 6L16 10V22" fill="none"/>
+                <!-- Окна левого дома -->
+                <rect x="5" y="16" width="2" height="3" stroke="none" fill="currentColor"/>
+                <rect x="9" y="16" width="2" height="3" stroke="none" fill="currentColor"/>
+                <rect x="7" y="11" width="2" height="2" stroke="none" fill="currentColor"/>
+                
+                <!-- Правый дом (общий контур) -->
+                <path d="M12 22V10L18 6L24 10V22" fill="none"/>
+                <!-- Окна правого дома -->
+                <rect x="13" y="16" width="2" height="3" stroke="none" fill="currentColor"/>
+                <rect x="17" y="16" width="2" height="3" stroke="none" fill="currentColor"/>
+                <rect x="15" y="11" width="2" height="2" stroke="none" fill="currentColor"/>
+                
+                <!-- Добавляем обводку для лучшей видимости контуров навигации -->
+                <path d="M4 22V10L10 6L16 10V22" stroke="currentColor"/>
+                <path d="M12 22V10L18 6L24 10V22" stroke="currentColor"/>
+            </svg>
+            Бизнес
+        </button>
+        <!-- Кнопка Инвентарь -->
+        <button id="nav-inventory" onclick="showSection('inventory')" 
+                class="relative text-gray-400 p-2 rounded-lg hover:text-white transition-colors flex flex-col items-center text-xs">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-9 0h18a2 2 0 002-2V8a2 2 0 00-2-2H3a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+            Инвентарь
+        </button>
+    </div>
+</footer>
+
+
+<script type="module">
+    // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ (Локальное состояние) ---
+    let userId = null;
+    let portfolio = { balance: 0, inventory: {}, realEstate: {}, businesses: [] }; 
+    let currentPrices = {}; 
+    let isMarketEngineRunning = false;
+    let marketLimits = {}; 
+    let lastPrevPrices = {}; 
+    let limitTimerRemaining = 0; 
+    let apartmentTimerRemaining = 0; 
+    let incomeTimerRemaining = 0; 
+    let businessIncomeTimerRemaining = 0; 
+    
+    // --- КОНСТАНТЫ ИНТЕРВАЛОВ (мс) ---
+    const STOCK_LIMIT_REFRESH_INTERVAL = 60000; // 1 минута
+    const REAL_ESTATE_REFRESH_INTERVAL = 180000; // 3 минуты
+    const PRICE_UPDATE_INTERVAL_MIN = 5000; // 5 секунд
+    const PRICE_UPDATE_INTERVAL_MAX = 10000; // 10 секунд
+    const PASSIVE_INCOME_INTERVAL = 5000; // Пассивный доход КВАРТИР (5 секунд)
+    // ОБНОВЛЕНО: 6 секунд
+    const BUSINESS_INCOME_INTERVAL = 6000; // Пассивный доход БИЗНЕСА (6 секунд)
+    const MAX_SIM_PRICE = 5000000.00; // Максимальный предел для расчета лимитов
+    // ОБНОВЛЕНО: 1%
+    const BUSINESS_INCOME_RATE = 0.01; // 1% дохода
+    const MAX_BUSINESSES = 20; // Максимальное количество бизнесов
+    
+    // Данные для инициализации
+    const initialBalance = 500.00; // Начальный баланс
+
+    // --- ДАННЫЕ АКТИВОВ (АКЦИЙ) ---
+    const initialPrices = {
+        'TITAN': 4500000.00, 'QUANT': 3500000.00, 'SPACE': 1250000.00, 
+        'ROBOT': 750000.00, 'CYBER': 580000.00, 'LUX_H': 240000.00, 
+        'MINES': 150000.00, 'BANK': 98000.00, 'HEALTH': 55000.00,
+        'BIO': 27000.00, 'MEDIA': 22000.00, 'GREEN': 11000.00,
+        'NEW_T': 9200.00, 
+        'GALAXY': 6850.00, 'GOLDX': 4520.00, 'PHARMA': 3100.00, 'AERO': 1850.00,
+        'ECOT': 980.00, 'DREAM': 640.00, 'STEEL': 350.00, 'FOOD': 210.00,
+        'MERC': 150.00, 'CRYP': 95.00, 'OIL': 75.00, 'SOFT': 48.00,
+        'MINI': 27.00, 'WATER': 18.00, 'CANDY': 14.50,
+    };
+
+    const assetNames = {
+        'TITAN': 'Титан Индастриз (Мегакорпорация)', 'QUANT': 'Квантовые Системы (Вычисления)',
+        'SPACE': 'Спейс Иксплорер (Космические Технологии)', 'ROBOT': 'РобоТехникс (AI и Автоматизация)',
+        'CYBER': 'КиберСейф (Продвинутая Безопасность)', 'LUX_H': 'Люкс Холдинг (Предметы Роскоши)',
+        'MINES': 'Редкие Металлы Инвест', 'BANK': 'Глобал Банк Центр', 
+        'HEALTH': 'Приватные Клиники (Мед. Услуги)', 'BIO': 'БиоФарм (Биотехнологии)',
+        'MEDIA': 'Медиа Групп 24/7', 'GREEN': 'Зеленая Энергетика Инвест',
+        'NEW_T': 'Новые Технологии Инвест',
+        'GALAXY': 'Глобальные Сети "Галактика"', 'GOLDX': 'Золотой Резерв',
+        'PHARMA': 'ФармЭкспресс', 'AERO': 'Аэрокосмические Системы',
+        'ECOT': 'Эко-Технологии Будущего', 'DREAM': 'Цифровые Развлечения "Мечта"',
+        'STEEL': 'СтальГрад Инвест', 'FOOD': 'Продуктовый Гигант "Урожай"',
+        'MERC': 'Меркурий Логистикс', 'CRYP': 'Крипто-Валютный Фонд',
+        'OIL': 'Нефтедобыча "Черный Алмаз"', 'SOFT': 'СофтВоркс ИТ',
+        'MINI': 'Мини-Завод "Прогресс"', 'WATER': 'Водные Ресурсы "Чистая Вода"',
+        'CANDY': 'Кондитерская Фабрика "Сладость"',
+    };
+
+    // ДАННЫЕ: Квартиры (Пассивный доход)
+    const apartmentData = [
+        { key: 'STUDIO', name: 'Студия "Минимализм"', basePrice: 20000, incomeRate: 0.0125 }, 
+        { key: 'ONE_BR', name: '1-комнатная "Комфорт"', basePrice: 85000, incomeRate: 0.011 }, 
+        { key: 'TWO_BR', name: '2-комнатная "Семейная"', basePrice: 195000, incomeRate: 0.009 }, 
+        { key: 'LUXE', name: 'Пентхаус "Престиж"', basePrice: 350000, incomeRate: 0.007 }, 
+    ];
+    let availableApartments = []; 
+    
+    // Инициализируем инвентарь для всех активов (по 0 шт.)
+    const initialInventory = Object.keys(initialPrices).reduce((acc, ticker) => {
+        acc[ticker] = { quantity: 0, totalCost: 0 }; 
+        return acc;
+    }, {});
+    
+    // Инициализируем инвентарь квартир (по 0 шт.)
+    const initialRealEstate = apartmentData.reduce((acc, apt) => {
+        acc[apt.key] = 0;
+        return acc;
+    }, {});
+
+
+    // --- КЛЮЧИ LOCAL STORAGE ---
+    const LOCAL_STORAGE_KEY_PORTFOLIO = 'stockSimPortfolio';
+    const LOCAL_STORAGE_KEY_USERID = 'stockSimUserId';
+    
+    // --- UI ЭЛЕМЕНТЫ ---
+    const appContainer = document.getElementById('app-container');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const balanceEl = document.getElementById('player-balance');
+    const userIdEl = document.getElementById('user-id');
+    const marketListEl = document.getElementById('market-list');
+    const inventoryListEl = document.getElementById('inventory-list');
+    const apartmentListEl = document.getElementById('apartment-list'); 
+    const messageBoxEl = document.getElementById('message-box');
+    const limitCountdownEl = document.getElementById('limit-countdown');
+    const apartmentCountdownEl = document.getElementById('apartment-countdown'); 
+    const incomeCountdownEl = document.getElementById('income-countdown'); 
+    const businessCountdownEl = document.getElementById('business-countdown'); 
+    const passiveIncomeInfoEl = document.getElementById('passive-income-info'); 
+    const businessIncomeInfoEl = document.getElementById('business-income-info'); 
+    const businessListEl = document.getElementById('business-list');
+    const businessCountEl = document.getElementById('business-count');
+    const openBusinessBtn = document.getElementById('open-business-btn');
+
+
+    // Элементы для навигации
+    const marketSectionEl = document.getElementById('market-section');
+    const realEstateSectionEl = document.getElementById('real-estate-section'); 
+    const businessSectionEl = document.getElementById('business-section'); 
+    const inventorySectionEl = document.getElementById('inventory-section');
+    const navMarketButton = document.getElementById('nav-market');
+    const navRealEstateButton = document.getElementById('nav-real-estate'); 
+    const navBusinessButton = document.getElementById('nav-business'); 
+    const navInventoryButton = document.getElementById('nav-inventory');
+    
+
+
+    // --- ФУНКЦИИ УТИЛИТЫ ---
+
+    // Отображение сообщения (замена alert)
+    const showMessage = (msg, type = 'info') => {
+        let bgColor = 'bg-gray-700';
+        if (type === 'success') bgColor = 'bg-green-600';
+        if (type === 'error') bgColor = 'bg-red-600';
+        if (type === 'warning') bgColor = 'bg-yellow-600';
+        if (type === 'business') bgColor = 'bg-orange-600';
+
+        // Обновляем классы для позиционирования и цвета
+        messageBoxEl.className = `fixed top-20 left-1/2 transform -translate-x-1/2 ${bgColor} text-white p-4 rounded-lg shadow-xl z-50 transition-opacity`;
+        messageBoxEl.textContent = msg;
+        messageBoxEl.classList.remove('hidden');
+
+        setTimeout(() => {
+            messageBoxEl.classList.add('hidden');
+        }, 3000);
+    };
+
+    // Форматирование валюты в гривны
+    const formatCurrency = (amount) => {
+        // Округляем до 2 знаков для отображения
+        return amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + ' грн';
+    };
+    
+    // Форматирование для маленького значка дохода
+    const formatBadgeCurrency = (amount) => {
+        const rounded = Math.round(amount);
+        if (amount === rounded) {
+            return `+${rounded}`;
+        }
+        return `+${amount.toFixed(1)}`; // Округляем до 1 знака после запятой для краткости
+    }
+    
+    // Генерация простого уникального ID
+    const generateId = () => 'id-' + Math.random().toString(36).substring(2, 9);
+
+
+    // --- ФУНКЦИИ LOCAL STORAGE ---
+
+    /**
+     * Загружает портфель из localStorage или инициализирует его.
+     */
+    const loadPortfolio = () => {
+        const storedData = localStorage.getItem(LOCAL_STORAGE_KEY_PORTFOLIO);
+        if (storedData) {
+            try {
+                const loadedPortfolio = JSON.parse(storedData);
+                
+                // Объединяем загруженные данные с начальными, чтобы добавить новые поля
+                portfolio.balance = loadedPortfolio.balance || initialBalance;
+                
+                // Акции
+                portfolio.inventory = { ...initialInventory }; 
+                if (loadedPortfolio.inventory) {
+                    for (const [ticker, item] of Object.entries(loadedPortfolio.inventory)) {
+                         if (portfolio.inventory.hasOwnProperty(ticker)) {
+                             if (typeof item === 'object' && item !== null && item.quantity !== undefined) {
+                                 portfolio.inventory[ticker] = { quantity: item.quantity || 0, totalCost: item.totalCost || 0 };
+                             } else if (typeof item === 'number') { 
+                                 portfolio.inventory[ticker] = { quantity: item, totalCost: 0 };
+                             }
+                         }
+                    }
+                }
+                
+                // Квартиры 
+                portfolio.realEstate = { ...initialRealEstate, ...loadedPortfolio.realEstate };
+                
+                // Бизнес
+                portfolio.businesses = Array.isArray(loadedPortfolio.businesses) ? loadedPortfolio.businesses : [];
+
+
+            } catch (e) {
+                console.error("Ошибка парсинга данных портфеля из localStorage:", e);
+                portfolio = { balance: initialBalance, inventory: initialInventory, realEstate: initialRealEstate, businesses: [] };
+            }
+        } else {
+            portfolio = { balance: initialBalance, inventory: initialInventory, realEstate: initialRealEstate, businesses: [] };
+        }
+        renderPortfolio(portfolio);
+    };
+
+    /**
+     * Сохраняет портфель в localStorage.
+     */
+    const savePortfolio = () => {
+        localStorage.setItem(LOCAL_STORAGE_KEY_PORTFOLIO, JSON.stringify(portfolio));
+        renderPortfolio(portfolio);
+    };
+
+    /**
+     * Устанавливает или генерирует локальный ID пользователя.
+     */
+    const setupUser = () => {
+        let storedUserId = localStorage.getItem(LOCAL_STORAGE_KEY_USERID);
+        if (!storedUserId) {
+            // Генерируем простой локальный ID
+            storedUserId = 'LOCAL-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+            localStorage.setItem(LOCAL_STORAGE_KEY_USERID, storedUserId);
+        }
+        userId = storedUserId;
+        userIdEl.textContent = userId;
+    };
+
+
+    // --- МЕХАНИЗМЫ РЫНКА АКЦИЙ, КВАРТИР, ДОХОДА ---
+    
+    // ... (Функции generateMaxCapacity, resetMarketLimits, startStockLimitEngine, startStockCountdown, 
+    // startMarketEngine, generateApartments, startRealEstateEngine, startApartmentCountdown, 
+    // calculateApartmentIncome, startApartmentIncomeEngine - ОСТАВЛЕНЫ БЕЗ ИЗМЕНЕНИЙ) ...
+
+    const generateMaxCapacity = (price) => {
+        const MIN_PRICE = 14.50; 
+        const MAX_LIMIT = 20; 
+        const MIN_LIMIT = 1;  
+
+        if (price >= 1000000) {
+            return 1;
+        }
+
+        const normalizedPrice = Math.min(1, Math.max(0, (price - MIN_PRICE) / (MAX_SIM_PRICE - MIN_PRICE)));
+        const inverseRatio = 1 - normalizedPrice; 
+        
+        let baseLimit = MIN_LIMIT + (inverseRatio * (MAX_LIMIT - MIN_LIMIT));
+        const volatility = (Math.random() * 0.5 - 0.25); 
+        let finalLimit = Math.round(baseLimit * (1 + volatility));
+
+        return Math.min(MAX_LIMIT, Math.max(MIN_LIMIT, finalLimit));
+    }
+
+    const resetMarketLimits = () => {
+        const newLimits = {};
+        for (const [ticker, price] of Object.entries(currentPrices)) {
+            const PRICE_THRESHOLD = 500000.00; 
+            const UNAVAILABILITY_CHANCE = 0.3; 
+            
+            if (price >= PRICE_THRESHOLD && Math.random() < UNAVAILABILITY_CHANCE) {
+                newLimits[ticker] = 0;
+                continue; 
+            }
+            newLimits[ticker] = generateMaxCapacity(price);
+        }
+        marketLimits = newLimits;
+    }
+    
+    const startStockLimitEngine = () => {
+        resetMarketLimits();
+        
+        setInterval(() => {
+            resetMarketLimits();
+            renderMarket(currentPrices, lastPrevPrices);
+            showMessage("Лимиты покупки акций обновлены!", 'info');
+        }, STOCK_LIMIT_REFRESH_INTERVAL);
+    }
+    
+    const startStockCountdown = () => {
+        limitTimerRemaining = STOCK_LIMIT_REFRESH_INTERVAL / 1000; 
+
+        const countdownLoop = () => {
+            limitTimerRemaining--;
+
+            const minutes = Math.floor(limitTimerRemaining / 60);
+            const seconds = limitTimerRemaining % 60;
+
+            const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            limitCountdownEl.textContent = formattedTime;
+
+            if (limitTimerRemaining <= 0) {
+                limitTimerRemaining = STOCK_LIMIT_REFRESH_INTERVAL / 1000;
+            }
+
+            setTimeout(countdownLoop, 1000);
+        };
+        countdownLoop(); 
+    };
+
+    const startMarketEngine = () => {
+        if (isMarketEngineRunning) return;
+        isMarketEngineRunning = true;
+
+        currentPrices = { ...initialPrices };
+        renderMarket(currentPrices, {});
+        
+        const marketLoop = () => {
+            const prevPrices = { ...currentPrices };
+            lastPrevPrices = prevPrices; 
+            
+            for (const [ticker, price] of Object.entries(currentPrices)) {
+                const change = (Math.random() * 0.1 - 0.05); 
+                const newPrice = price * (1 + change);
+                currentPrices[ticker] = Math.max(newPrice, 0.01); 
+            }
+
+            renderMarket(currentPrices, prevPrices);
+            renderPortfolio(portfolio); 
+
+            const nextUpdate = Math.random() * PRICE_UPDATE_INTERVAL_MIN + PRICE_UPDATE_INTERVAL_MIN;
+            setTimeout(marketLoop, nextUpdate);
+        };
+        marketLoop(); 
+    };
+
+    const generateApartments = () => {
+        availableApartments = apartmentData.map(apt => {
+            let limit;
+            if (apt.key === 'LUXE' && Math.random() < 0.5) {
+                limit = 0;
+            } else {
+                limit = Math.floor(Math.random() * 5) + 1; 
+            }
+            
+            const fluctuation = (Math.random() * 0.2 - 0.1); 
+            const currentPrice = apt.basePrice * (1 + fluctuation);
+            
+            return {
+                ...apt,
+                currentPrice: Math.round(currentPrice / 100) * 100, 
+                availableLimit: limit
+            };
+        });
+        renderRealEstate();
+    }
+
+    const startRealEstateEngine = () => {
+        generateApartments(); 
+        
+        setInterval(() => {
+            generateApartments();
+            showMessage("Магазин квартир обновлен! Проверьте новые предложения.", 'warning');
+        }, REAL_ESTATE_REFRESH_INTERVAL);
+    }
+    
+    const startApartmentCountdown = () => {
+        apartmentTimerRemaining = REAL_ESTATE_REFRESH_INTERVAL / 1000; 
+
+        const countdownLoop = () => {
+            apartmentTimerRemaining--;
+
+            const minutes = Math.floor(apartmentTimerRemaining / 60);
+            const seconds = apartmentTimerRemaining % 60;
+
+            const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            apartmentCountdownEl.textContent = formattedTime;
+
+            if (apartmentTimerRemaining <= 0) {
+                apartmentTimerRemaining = REAL_ESTATE_REFRESH_INTERVAL / 1000;
+            }
+
+            setTimeout(countdownLoop, 1000);
+        };
+        countdownLoop(); 
+    };
+
+    const calculateApartmentIncome = () => {
+        let totalIncome = 0;
+        const ownedProperties = portfolio.realEstate;
+        
+        for (const aptKey in ownedProperties) {
+            const ownedCount = ownedProperties[aptKey];
+            
+            if (ownedCount > 0) {
+                const aptData = apartmentData.find(a => a.key === aptKey);
+                if (aptData) {
+                    const incomePerUnit = aptData.basePrice * aptData.incomeRate; 
+                    const income = incomePerUnit * ownedCount;
+                    totalIncome += income;
+                }
+            }
+        }
+        
+        passiveIncomeInfoEl.textContent = `Доход (Квартиры): ${formatCurrency(totalIncome)} / 5 сек`;
+        return totalIncome;
+    }
+
+    const startApartmentIncomeEngine = () => {
+        let incomeCycleRemaining = PASSIVE_INCOME_INTERVAL / 1000;
+        
+        const incomeLoop = () => {
+            incomeCycleRemaining--;
+            incomeCountdownEl.textContent = String(incomeCycleRemaining).padStart(2, '0');
+
+            if (incomeCycleRemaining <= 0) {
+                const totalIncome = calculateApartmentIncome();
+
+                if (totalIncome > 0) {
+                    portfolio.balance += totalIncome;
+                    savePortfolio();
+                    showMessage(`Получен доход от квартир: +${formatCurrency(totalIncome)}`, 'success');
+                }
+                
+                incomeCycleRemaining = PASSIVE_INCOME_INTERVAL / 1000;
+            }
+            
+            setTimeout(incomeLoop, 1000);
+        };
+        incomeLoop(); 
+    }
+    
+    
+    // --- МЕХАНИЗМ: БИЗНЕС ---
+    
+    const calculateBusinessIncome = () => {
+        let totalIncome = 0;
+        
+        portfolio.businesses.forEach(business => {
+            // ИСПОЛЬЗУЕМ ОБНОВЛЕННУЮ КОНСТАНТУ 0.01
+            const income = business.investment * BUSINESS_INCOME_RATE; 
+            totalIncome += income;
+        });
+        
+        // ОБНОВЛЕНО: 6 сек
+        businessIncomeInfoEl.textContent = `Доход (Бизнес): ${formatCurrency(totalIncome)} / 6 сек`;
+        return totalIncome;
+    }
+    
+    /**
+     * Отображает маленький значок дохода над иконкой "Бизнес" и анимирует его.
+     */
+    const showIncomeBadge = (amount) => {
+        const navButton = document.getElementById('nav-business');
+        const badgeText = formatBadgeCurrency(amount);
+
+        // Создаем элемент значка
+        const badge = document.createElement('span');
+        badge.textContent = badgeText;
+        badge.className = 'income-badge'; // Используем общий класс
+        badge.style.transition = 'all 0.5s cubic-bezier(0.17, 0.84, 0.44, 1)'; // Красивая анимация
+        badge.style.opacity = '1';
+
+        navButton.appendChild(badge);
+
+        // Анимация: двигаем вверх
+        setTimeout(() => {
+            badge.style.transform = 'translate(-50%, -20px)'; // Move up and out
+            badge.style.opacity = '0';
+        }, 50);
+
+        // Удаляем после завершения анимации
+        setTimeout(() => {
+            badge.remove();
+        }, 550); 
+    };
+
+    const startBusinessIncomeEngine = () => {
+        // ИСПОЛЬЗУЕМ ОБНОВЛЕННУЮ КОНСТАНТУ 6000 мс
+        businessIncomeTimerRemaining = BUSINESS_INCOME_INTERVAL / 1000;
+        
+        const incomeLoop = () => {
+            businessIncomeTimerRemaining--;
+            businessCountdownEl.textContent = String(businessIncomeTimerRemaining).padStart(2, '0');
+
+            if (businessIncomeTimerRemaining <= 0) {
+                const totalIncome = calculateBusinessIncome();
+
+                if (totalIncome > 0) {
+                    portfolio.balance += totalIncome;
+                    savePortfolio();
+                    showIncomeBadge(totalIncome); 
+                }
+                
+                // ИСПОЛЬЗУЕМ ОБНОВЛЕННУЮ КОНСТАНТУ 6000 мс
+                businessIncomeTimerRemaining = BUSINESS_INCOME_INTERVAL / 1000;
+            }
+            
+            setTimeout(incomeLoop, 1000);
+        };
+        incomeLoop();
+    }
+    
+    /**
+     * Обрабатывает открытие нового бизнеса.
+     */
+    window.handleOpenBusiness = () => {
+        const nameInput = document.getElementById('business-name-input');
+        const investmentInput = document.getElementById('business-investment-input');
+        
+        const name = nameInput.value.trim() || "Неназванный Бизнес";
+        const investment = parseFloat(investmentInput.value);
+
+        if (portfolio.businesses.length >= MAX_BUSINESSES) {
+             showMessage(`Вы достигли лимита: можно иметь только ${MAX_BUSINESSES} бизнесов.`, 'error');
+             openBusinessBtn.disabled = true;
+             return;
+        }
+
+        if (isNaN(investment) || investment < 1) { // Проверка на положительное число (от 1 грн)
+            showMessage(`Сумма инвестиций должна быть положительным числом (минимум 1 грн).`, 'error');
+            return;
+        }
+
+        if (portfolio.balance < investment) {
+            showMessage("Недостаточно средств для открытия бизнеса.", 'error');
+            return;
+        }
+
+        // Вычет средств и добавление бизнеса
+        portfolio.balance -= investment;
+        
+        const incomePerCycle = investment * BUSINESS_INCOME_RATE; // Используем новую ставку
+
+        portfolio.businesses.push({
+            id: generateId(),
+            name: name,
+            investment: investment,
+            incomeRate: BUSINESS_INCOME_RATE,
+            incomePerCycle: incomePerCycle
+        });
+
+        savePortfolio();
+        renderBusinessSection();
+        
+        // Сброс формы
+        nameInput.value = '';
+        investmentInput.value = '';
+
+        showMessage(`Бизнес "${name}" успешно открыт!`, 'success');
+        calculateBusinessIncome(); 
+    };
+    
+    /**
+     * Продажа бизнеса.
+     */
+    window.sellBusiness = (id, investment) => {
+        // 1. Находим индекс и сам бизнес
+        const businessIndex = portfolio.businesses.findIndex(b => b.id === id);
+        if (businessIndex === -1) {
+            showMessage("Ошибка: Бизнес не найден.", 'error');
+            return;
+        }
+        
+        const businessName = portfolio.businesses[businessIndex].name;
+        
+        // 2. Расчет цены продажи: (Инвестиции * [1.05 до 1.35] множитель)
+        const profitMultiplier = 1.05 + (Math.random() * 0.30); // 5% до 35% прибыли
+        const salePrice = investment * profitMultiplier;
+        
+        // 3. Добавляем средства и удаляем бизнес
+        portfolio.balance += salePrice;
+        portfolio.businesses.splice(businessIndex, 1);
+        
+        savePortfolio();
+        renderBusinessSection();
+        calculateBusinessIncome();
+        
+        const profit = salePrice - investment;
+        showMessage(`Бизнес "${businessName}" продан! Вы получили: ${formatCurrency(salePrice)}. Прибыль: ${formatCurrency(profit)}`, 'success');
+    };
+
+
+    // --- ФУНКЦИИ ТОРГОВЛИ И ПОКУПКИ КВАРТИР (КОД ОСТАВЛЕН БЕЗ ИЗМЕНЕНИЙ) ---
+
+    window.buyAsset = (ticker, amount) => {
+        const price = currentPrices[ticker];
+        const cost = price * amount;
+
+        if (portfolio.balance < cost) {
+            showMessage("Недостаточно средств на балансе.", 'error');
+            return;
+        }
+        
+        if (marketLimits[ticker] < amount) {
+             showMessage(`Лимит на покупку ${ticker} исчерпан. Доступно: ${marketLimits[ticker]} шт.`, 'error');
+             return;
+        }
+
+        marketLimits[ticker] -= amount;
+
+        const currentItem = portfolio.inventory[ticker] || { quantity: 0, totalCost: 0 };
+
+        portfolio.balance -= cost;
+        currentItem.quantity += amount;
+        currentItem.totalCost += cost; 
+        portfolio.inventory[ticker] = currentItem;
+
+        savePortfolio(); 
+        renderMarket(currentPrices, lastPrevPrices); 
+        showMessage(`Куплено ${amount} шт. ${ticker} по цене ${formatCurrency(price)}. `, 'success');
+    };
+
+    window.sellAsset = (ticker, amount) => {
+        const price = currentPrices[ticker];
+        const revenue = price * amount;
+        
+        const currentItem = portfolio.inventory[ticker];
+        let ownedAmount = currentItem ? currentItem.quantity : 0;
+
+        if (ownedAmount < amount) {
+            showMessage(`У вас только ${ownedAmount} шт. ${ticker}. Недостаточно для продажи.`, 'error');
+            return;
+        }
+        
+        let costOfSoldShares = 0;
+        if (currentItem.quantity > 0 && currentItem.totalCost > 0) {
+            const avgPrice = currentItem.totalCost / currentItem.quantity;
+            costOfSoldShares = avgPrice * amount;
+        }
+
+        portfolio.balance += revenue;
+        currentItem.quantity -= amount;
+        currentItem.totalCost -= costOfSoldShares; 
+
+        if (currentItem.quantity <= 0) {
+            currentItem.quantity = 0;
+            currentItem.totalCost = 0;
+        } else if (currentItem.totalCost < 0) {
+             currentItem.totalCost = 0; 
+        }
+        
+        portfolio.inventory[ticker] = currentItem; 
+
+        savePortfolio(); 
+        showMessage(`Продано ${amount} шт. ${ticker} по цене ${formatCurrency(price)}. `, 'success');
+    };
+
+    window.buyApartment = (key) => {
+        const apt = availableApartments.find(a => a.key === key);
+        if (!apt) {
+            showMessage("Ошибка: Квартира не найдена в текущем магазине.", 'error');
+            return;
+        }
+        const cost = apt.currentPrice;
+
+        if (portfolio.balance < cost) {
+            showMessage("Недостаточно средств на балансе.", 'error');
+            return;
+        }
+        
+        if (apt.availableLimit <= 0) {
+             showMessage(`Лимит на покупку "${apt.name}" исчерпан в этом цикле.`, 'error');
+             return;
+        }
+
+        apt.availableLimit -= 1; 
+
+        portfolio.balance -= cost;
+        portfolio.realEstate[key] = (portfolio.realEstate[key] || 0) + 1;
+
+        savePortfolio(); 
+        renderRealEstate(); 
+        calculateApartmentIncome(); 
+        showMessage(`Куплена 1 шт. "${apt.name}" по цене ${formatCurrency(cost)}.`, 'success');
+    };
+
+
+    // --- ФУНКЦИИ РЕНДЕРИНГА UI ---
+
+    window.showSection = (sectionId) => {
+        // Скрываем все секции
+        document.querySelectorAll('.main-content-section').forEach(el => el.classList.add('hidden'));
+        
+        // Сбрасываем стили кнопок навигации
+        document.querySelectorAll('#nav-bar button').forEach(el => el.classList.remove('nav-item-active', 'text-blue-400'));
+        document.querySelectorAll('#nav-bar button').forEach(el => el.classList.add('text-gray-400'));
+
+        // Показываем выбранную секцию и выделяем кнопку
+        const sectionEl = document.getElementById(`${sectionId}-section`);
+        const navButtonEl = document.getElementById(`nav-${sectionId.replace(/-/g, '')}`);
+
+        if (sectionEl) sectionEl.classList.remove('hidden');
+        if (navButtonEl) {
+             navButtonEl.classList.add('nav-item-active', 'text-blue-400');
+             navButtonEl.classList.remove('text-gray-400');
+        }
+
+        // Обновляем данные при переключении
+        if (sectionId === 'inventory') {
+            renderPortfolio(portfolio);
+        } else if (sectionId === 'real-estate') {
+            renderRealEstate(); 
+        } else if (sectionId === 'business') {
+            renderBusinessSection(); 
+        }
+    };
+
+
+    const renderMarket = (prices, prevPrices) => {
+        marketListEl.innerHTML = '';
+        const sortedTickers = Object.entries(prices)
+            .sort(([, priceA], [, priceB]) => priceB - priceA)
+            .map(([ticker]) => ticker);
+
+        sortedTickers.forEach(ticker => {
+            const price = prices[ticker];
+            const name = assetNames[ticker];
+            const prevPrice = prevPrices[ticker] || price;
+            const diff = price - prevPrice;
+            
+            const diffPercent = ((diff / prevPrice) * 100).toFixed(2);
+            const diffClass = diff > 0 ? 'price-up' : diff < 0 ? 'price-down' : 'text-gray-400';
+            const diffSign = diff >= 0 ? '▲' : '▼';
+            
+            const remainingLimit = marketLimits[ticker] || 0;
+            const isAvailable = remainingLimit > 0;
+            
+            const priceChangeMarkup = `<span class="${diffClass} text-sm font-medium transition-colors duration-500">(${diffSign} ${diffPercent}%)</span>`;
+            const tradeAmount = 1; 
+            
+            let limitMessage = '';
+            let limitClass = 'text-blue-300';
+            if (remainingLimit === 0) {
+                 limitMessage = 'НЕДОСТУПНО в этом цикле';
+                 limitClass = 'text-red-400 font-bold';
+            } else {
+                 limitMessage = `Доступно: ${remainingLimit} шт.`;
+            }
+
+            marketListEl.innerHTML += `
+                <div class="flex flex-col sm:flex-row items-center justify-between p-4 bg-gray-700 rounded-lg">
+                    <div class="flex-grow mb-2 sm:mb-0">
+                        <p class="text-xl font-bold text-white">${name} (${ticker})</p>
+                        <div class="text-lg font-semibold flex items-center space-x-2">
+                           <span class="text-white ${diffClass} pr-2 transition-all duration-500">${formatCurrency(price)}</span>
+                           ${priceChangeMarkup}
+                        </div>
+                        <p class="text-sm font-medium ${limitClass} mt-1">${limitMessage}</p>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button onclick="buyAsset('${ticker}', ${tradeAmount})" 
+                                ${isAvailable ? '' : 'disabled'}
+                                class="btn-action btn-buy flex items-center">
+                            Купить (${tradeAmount} шт.)
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+    };
+    
+    const renderRealEstate = () => {
+        apartmentListEl.innerHTML = '';
+        
+        if (availableApartments.length === 0) {
+            apartmentListEl.innerHTML = '<p class="text-gray-500 p-4">Магазин пуст. Ожидаем обновления ассортимента...</p>';
+            return;
+        }
+        
+        const sortedApartments = availableApartments.sort((a, b) => a.currentPrice - b.currentPrice);
+
+        sortedApartments.forEach(apt => {
+            const isAvailable = apt.availableLimit > 0;
+            const limitClass = isAvailable ? 'text-blue-300' : 'text-red-400 font-bold';
+            const incomePerCycle = apt.basePrice * apt.incomeRate; 
+
+            apartmentListEl.innerHTML += `
+                <div class="flex flex-col sm:flex-row items-center justify-between p-4 bg-gray-700 rounded-lg">
+                    <div class="flex-grow mb-2 sm:mb-0">
+                        <p class="text-xl font-bold text-white">${apt.name}</p>
+                        <p class="text-lg font-semibold text-green-400 mt-1">${formatCurrency(apt.currentPrice)}</p>
+                        <p class="text-sm text-gray-400">Доход (5 сек): <span class="font-medium text-green-300">${formatCurrency(incomePerCycle)}</span></p>
+                        <p class="text-sm font-medium ${limitClass} mt-1">
+                            ${isAvailable ? `Доступно: ${apt.availableLimit} шт.` : 'НЕДОСТУПНО в этом цикле'}
+                        </p>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button onclick="buyApartment('${apt.key}')" 
+                                ${isAvailable ? '' : 'disabled'}
+                                class="btn-action btn-buy flex items-center">
+                            Купить
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+    };
+    
+    /**
+     * Рендерит список открытых бизнесов и обновляет лимит счетчика.
+     */
+    const renderBusinessSection = () => {
+        businessListEl.innerHTML = '';
+        const businessCount = portfolio.businesses.length;
+        
+        businessCountEl.textContent = `${businessCount}/${MAX_BUSINESSES}`;
+        
+        if (businessCount >= MAX_BUSINESSES) {
+            openBusinessBtn.disabled = true;
+            openBusinessBtn.textContent = 'Достигнут лимит (20)';
+        } else {
+            openBusinessBtn.disabled = false;
+            openBusinessBtn.textContent = 'Открыть Бизнес';
+        }
+
+        if (businessCount === 0) {
+             businessListEl.innerHTML = '<p class="text-gray-500">У вас пока нет бизнесов. Откройте новый, чтобы начать получать доход!</p>';
+             return;
+        }
+
+        portfolio.businesses.forEach(business => {
+            // ОБНОВЛЕНО: 1% и 6 секунд
+            const incomeRate = (business.incomeRate * 100).toFixed(0); 
+            
+            businessListEl.innerHTML += `
+                <div class="p-4 bg-gray-700 rounded-lg border-l-4 border-orange-500 flex flex-col md:flex-row justify-between items-start md:items-center">
+                    <div class="mb-3 md:mb-0">
+                        <p class="text-xl font-bold text-white">${business.name}</p>
+                        <p class="text-md text-gray-400">Инвестиции: <span class="font-medium text-white">${formatCurrency(business.investment)}</span></p>
+                        <p class="text-md font-medium text-green-300 mt-1">Прибыль (${incomeRate}% / 6 сек): ${formatCurrency(business.incomePerCycle)}</p>
+                    </div>
+                    <button onclick="sellBusiness('${business.id}', ${business.investment})" 
+                            class="btn-action btn-sell-business flex items-center text-sm">
+                        Продать Бизнес
+                    </button>
+                </div>
+            `;
+        });
+        
+    }
+
+
+    /**
+     * Рендерит данные портфеля (баланс, акции, квартиры, бизнес).
+     */
+    const renderPortfolio = (data) => {
+        balanceEl.textContent = formatCurrency(data.balance);
+        
+        // Пересчет и отображение доходов
+        calculateApartmentIncome();
+        calculateBusinessIncome();
+
+        inventoryListEl.innerHTML = '';
+        let hasInventory = false;
+        
+        // --- Рендеринг КВАРТИР ---
+        let apartmentListMarkup = '';
+        const ownedApartments = Object.entries(data.realEstate).filter(([, count]) => count > 0);
+        
+        if (ownedApartments.length > 0) {
+            hasInventory = true;
+            apartmentListMarkup += '<h3 class="text-xl font-semibold mb-3 text-yellow-400 border-b border-gray-700 pb-2">Моя Недвижимость</h3>';
+            
+            ownedApartments.forEach(([aptKey, count]) => {
+                const aptData = apartmentData.find(a => a.key === aptKey);
+                if (aptData) {
+                    const totalIncome = aptData.basePrice * aptData.incomeRate * count;
+
+                    apartmentListMarkup += `
+                        <div class="p-4 bg-gray-700 rounded-lg border-l-4 border-yellow-500">
+                            <p class="text-xl font-bold text-white">${aptData.name}</p>
+                            <p class="text-sm text-gray-400">Владеете: ${count} шт.</p>
+                            <p class="text-md font-medium text-green-300 mt-2">Общий доход (5 сек): ${formatCurrency(totalIncome)}</p>
+                        </div>
+                    `;
+                }
+            });
+            apartmentListMarkup += '<div class="h-6"></div>';
+        }
+        inventoryListEl.innerHTML += apartmentListMarkup;
+        
+        // --- Рендеринг БИЗНЕСА (НОВЫЙ БЛОК) ---
+        let businessListMarkup = '';
+        if (data.businesses.length > 0) {
+            hasInventory = true;
+            businessListMarkup += '<h3 class="text-xl font-semibold mb-3 text-orange-400 border-b border-gray-700 pb-2">Мои Бизнесы</h3>';
+            
+            data.businesses.forEach(business => {
+                // ОБНОВЛЕНО: 1% и 6 секунд
+                const incomeRate = (business.incomeRate * 100).toFixed(0); 
+                businessListMarkup += `
+                    <div class="p-4 bg-gray-700 rounded-lg border-l-4 border-orange-500">
+                        <p class="text-xl font-bold text-white">${business.name}</p>
+                        <p class="text-sm text-gray-400">Инвестировано: ${formatCurrency(business.investment)}</p>
+                        <p class="text-md font-medium text-green-300 mt-2">Прибыль (${incomeRate}% / 6 сек): ${formatCurrency(business.incomePerCycle)}</p>
+                    </div>
+                `;
+            });
+            businessListMarkup += '<div class="h-6"></div>';
+        }
+        inventoryListEl.innerHTML += businessListMarkup;
+
+
+        // --- Рендеринг АКЦИЙ ---
+        
+        let stockListMarkup = '';
+        const ownedStocks = Object.entries(data.inventory).filter(([, item]) => 
+            typeof item === 'object' && item !== null && item.quantity > 0
+        );
+
+        if (ownedStocks.length > 0) {
+            hasInventory = true;
+            stockListMarkup += '<h3 class="text-xl font-semibold mb-3 text-blue-400 border-b border-gray-700 pb-2">Мои Акции</h3>';
+            
+            ownedStocks.sort(([tickerA], [tickerB]) => tickerA.localeCompare(tickerB)).forEach(([ticker, item]) => {
+                
+                const quantity = item.quantity;
+                const totalCost = item.totalCost;
+                const price = currentPrices[ticker] || 0;
+                const name = assetNames[ticker];
+                const tradeAmount = 1;
+                const currentValue = price * quantity;
+                const avgPrice = totalCost / quantity;
+                const profitLoss = currentValue - totalCost;
+                const profitPercent = ((profitLoss / totalCost) * 100).toFixed(2);
+                const isProfitable = profitLoss > 0.01; 
+                const isLoss = profitLoss < -0.01;
+                const profitLossClass = isProfitable ? 'text-green-400 border-green-500' : 
+                                      (isLoss ? 'text-red-400 border-red-500' : 'text-gray-400 border-gray-600');
+                const backgroundColor = isProfitable ? 'bg-green-900/40' : (isLoss ? 'bg-red-900/40' : 'bg-gray-800');
+                let sellAdvice = 'Нейтрально';
+                if (isProfitable) sellAdvice = 'Выгодно продать';
+                if (isLoss) sellAdvice = 'Убыток (не выгодно)';
+
+
+                stockListMarkup += `
+                    <div class="p-4 bg-gray-700 rounded-lg border-l-4 ${isProfitable ? 'border-green-500' : (isLoss ? 'border-red-500' : 'border-gray-500')}">
+                        <div class="flex justify-between items-center mb-1">
+                            <p class="text-xl font-bold text-white">${name} (${ticker})</p>
+                            <p class="text-sm text-gray-400">Владеете: ${quantity} шт.</p>
+                        </div>
+                        
+                        <p class="text-md font-medium text-gray-300">Текущая стоимость: ${formatCurrency(currentValue)}</p>
+                        <p class="text-sm text-gray-400">Средняя цена покупки: ${formatCurrency(avgPrice)}</p>
+                        
+                        <div class="mt-2 p-2 rounded-md ${backgroundColor} flex justify-between items-center">
+                            <p class="text-sm font-semibold ${profitLossClass.split(' ')[0]}">
+                                ${profitLoss >= 0 ? 'Прибыль' : 'Убыток'}: ${formatCurrency(Math.abs(profitLoss))} (${profitPercent}%)
+                            </p>
+                            <span class="text-xs font-bold ${profitLossClass.split(' ')[0]}">${sellAdvice}</span>
+                        </div>
+
+                        <div class="mt-3 flex justify-end space-x-3">
+                            <!-- Кнопка: Продать ВСЕ -->
+                            <button onclick="sellAsset('${ticker}', ${quantity})" 
+                                    class="btn-action btn-sell-all flex items-center text-sm">
+                                Продать ВСЕ (${quantity} шт.)
+                            </button>
+                            <!-- Кнопка: Продать 1 шт. -->
+                            <button onclick="sellAsset('${ticker}', ${tradeAmount})" 
+                                    class="btn-action btn-sell flex items-center text-sm">
+                                Продать (${tradeAmount} шт.)
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+        inventoryListEl.innerHTML += stockListMarkup;
+
+
+        if (!hasInventory) {
+            inventoryListEl.innerHTML = '<p class="text-gray-500 p-4">Портфель пуст. Купите что-нибудь на бирже, недвижимость или откройте свой бизнес!</p>';
+        }
+    };
+
+    // --- ЗАПУСК ПРИЛОЖЕНИЯ ---
+
+    const setupApp = () => {
+        setupUser();      
+        loadPortfolio();  
+        startMarketEngine();        
+        startStockLimitEngine();    
+        startStockCountdown();      
+        startRealEstateEngine();    
+        startApartmentCountdown();  
+        startApartmentIncomeEngine(); 
+        startBusinessIncomeEngine(); 
+        
+        showSection('market'); 
+
+        loadingOverlay.classList.add('hidden');
+        appContainer.classList.remove('hidden');
+    };
+
+    window.onload = setupApp;
+
+</script>
+</body>
+</html>
