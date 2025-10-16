@@ -18,6 +18,8 @@
             --color-danger: #ef4444; /* Red-500 */
             --color-warning: #f59e0b; /* Amber-500 */
             --color-business: #f97316; /* Orange-500 */
+            --color-transport: #8b5cf6; /* Violet-500 */
+            --color-credit: #ec4899; /* Pink-500 */
             --color-apartment-sell: #854d0e; /* Brown-800 for selling apartments */
             font-family: 'Inter', sans-serif;
         }
@@ -35,8 +37,7 @@
         .container-app {
             width: 100%;
             max-width: 1200px;
-            /* Добавляем отступ снизу, чтобы контент не перекрывался нижней навигацией на мобильных устройствах */
-            padding-bottom: 70px; 
+            padding-bottom: 80px; /* Увеличили отступ для новой навигации */
         }
 
         .card {
@@ -47,7 +48,7 @@
             transition: all 0.3s ease;
         }
         
-        /* Custom button styling for interactivity */
+        /* Стили кнопок */
         .btn-action {
             padding: 8px 16px;
             border-radius: 8px;
@@ -55,156 +56,108 @@
             transition: background-color 0.2s, transform 0.1s;
         }
 
-        .btn-buy {
-            background-color: var(--color-success);
-            color: var(--color-bg);
-        }
+        .btn-buy { background-color: var(--color-success); color: var(--color-bg); }
+        .btn-buy:hover:not(:disabled) { background-color: #059669; transform: translateY(-1px); }
         
-        .btn-open-business {
-            background-color: var(--color-business);
-            color: var(--color-bg);
-        }
+        .btn-open-business { background-color: var(--color-business); color: var(--color-bg); }
+        .btn-open-business:hover:not(:disabled) { background-color: #ea580c; transform: translateY(-1px); }
         
-        .btn-sell-business {
-            background-color: #843b0d; /* Darker Orange */
-            color: var(--color-text);
-        }
+        .btn-sell-business { background-color: #843b0d; color: var(--color-text); }
+        .btn-sell-business:hover:not(:disabled) { background-color: #9a4c16; transform: translateY(-1px); }
         
-        .btn-sell-apartment {
-            background-color: var(--color-apartment-sell);
-            color: var(--color-text);
-        }
+        .btn-sell-apartment { background-color: var(--color-apartment-sell); color: var(--color-text); }
+        .btn-sell-apartment:hover:not(:disabled) { background-color: #a16207; transform: translateY(-1px); }
+        
+        .btn-sell { background-color: var(--color-danger); color: var(--color-text); }
+        .btn-sell:hover:not(:disabled) { background-color: #dc2626; transform: translateY(-1px); }
+        
+        .btn-sell-all { background-color: #991b1b; color: var(--color-text); }
+        .btn-sell-all:hover:not(:disabled) { background-color: #b91c1c; transform: translateY(-1px); }
+        
+        .btn-credit { background-color: var(--color-credit); color: var(--color-text); }
+        .btn-credit:hover:not(:disabled) { background-color: #db2777; transform: translateY(-1px); }
 
-        .btn-promo-submit {
-             background-color: var(--color-primary);
-             color: var(--color-text);
-        }
-
-        .btn-buy:hover:not(:disabled) {
-            background-color: #059669; /* Emerald-600 */
-            transform: translateY(-1px);
-        }
-        
-        .btn-open-business:hover:not(:disabled) {
-            background-color: #ea580c; /* Orange-600 */
-            transform: translateY(-1px);
-        }
-        
-        .btn-sell-business:hover:not(:disabled) {
-            background-color: #9a4c16; /* Darker Orange Hover */
-            transform: translateY(-1px);
-        }
-
-        .btn-sell-apartment:hover:not(:disabled) {
-            background-color: #a16207; /* Amber-700 hover */
-            transform: translateY(-1px);
-        }
-        
-        .btn-promo-submit:hover:not(:disabled) {
-            background-color: #2563eb; /* Blue-700 hover */
-            transform: translateY(-1px);
-        }
-
-
-        .btn-sell {
-            background-color: var(--color-danger);
-            color: var(--color-text);
-        }
-        
-        /* Дополнительный стиль для кнопки "Продать ВСЕ" */
-        .btn-sell-all {
-            background-color: #991b1b; /* Red-800 */
-            color: var(--color-text);
-        }
-
-        .btn-sell:hover:not(:disabled) {
-            background-color: #dc2626; /* Red-600 */
-            transform: translateY(-1px);
-        }
-        
-        .btn-sell-all:hover:not(:disabled) {
-            background-color: #b91c1c; /* Red-700 */
-            transform: translateY(-1px);
-        }
-        
         .btn-action:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none !important;
         }
 
+        /* Анимация цен */
+        .price-up { animation: flash-green 0.5s ease-out; color: var(--color-success); }
+        .price-down { animation: flash-red 0.5s ease-out; color: var(--color-danger); }
+        @keyframes flash-green { 0% { background-color: rgba(16, 185, 129, 0.3); } 100% { background-color: transparent; } }
+        @keyframes flash-red { 0% { background-color: rgba(239, 68, 68, 0.3); } 100% { background-color: transparent; } }
 
-        /* Stock price animation for change */
-        .price-up {
-            animation: flash-green 0.5s ease-out;
-            color: var(--color-success);
-        }
-        .price-down {
-            animation: flash-red 0.5s ease-out;
-            color: var(--color-danger);
-        }
-
-        @keyframes flash-green {
-            0% { background-color: rgba(16, 185, 129, 0.3); }
-            100% { background-color: transparent; }
-        }
-
-        @keyframes flash-red {
-            0% { background-color: rgba(239, 68, 68, 0.3); }
-            100% { background-color: transparent; }
-        }
-
-        /* Модальное окно сообщения теперь сверху по центру */
+        /* Модальное окно */
         #message-box {
-            position: fixed;
-            top: 20px; /* Позиция сверху */
-            left: 50%; /* Центрирование */
-            transform: translateX(-50%); /* Точное центрирование */
-            max-width: 90%;
-            z-index: 50;
-        }
-
-        /* Делаем навигацию невидимой на больших экранах, где она не нужна */
-        @media (min-width: 1024px) {
-            #nav-bar {
-                display: none !important;
-            }
-        }
-
-        .nav-item-active {
-            color: var(--color-primary);
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            max-width: 90%; z-index: 100;
         }
         
-        /* Стиль для всплывающего значка дохода */
-        .income-badge {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translate(-50%, -10px);
-            background-color: var(--color-success);
-            color: var(--color-bg);
-            padding: 2px 6px;
-            border-radius: 9999px; /* Full rounded */
-            font-size: 0.7rem;
-            font-weight: 900;
-            white-space: nowrap;
-            opacity: 0;
-            z-index: 10;
-            pointer-events: none;
+        /* Окно принудительной продажи */
+        #force-sell-overlay {
+            z-index: 999;
         }
+
+        /* Скролл для навигации */
+        #nav-scroll-container {
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none; /* Firefox */
+        }
+        #nav-scroll-container::-webkit-scrollbar { display: none; /* Chrome, Safari */ }
+
+        /* Скролл для окна обновлений */
+        .update-content-scroll::-webkit-scrollbar { width: 8px; }
+        .update-content-scroll::-webkit-scrollbar-track { background: var(--color-bg); border-radius: 10px; }
+        .update-content-scroll::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 10px; }
+        .update-content-scroll::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+        .update-content-scroll { scrollbar-color: #4b5563 var(--color-bg); scrollbar-width: thin; }
+
+
+        @media (min-width: 1024px) { #nav-bar { display: none !important; } }
+        .nav-item-active { color: var(--color-primary); }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
+<!-- Окно Обновлений -->
+<div id="update-overlay" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-[1000]">
+    <div class="card max-w-lg w-full border-2 border-blue-500 flex flex-col max-h-[90vh]">
+        <h2 class="text-2xl font-bold text-blue-400 mb-4 flex-shrink-0">Что нового в версии 1.4.0 "ULTRA UPDATE"</h2>
+        <div class="update-content-scroll flex-grow overflow-y-auto pr-2">
+            <div class="text-gray-300 space-y-3 mb-6 text-left">
+                <p>✅ <span class="font-semibold">Ускорен доход:</span> Бизнес теперь приносит прибыль каждые 6 сек, а квартиры - каждые 8 сек!</p>
+                <p>🏠 <span class="font-semibold">Новая Недвижимость:</span> Добавлены элитные объекты, включая виллы и поместья стоимостью до 10,000,000 грн.</p>
+                <p>🚗 <span class="font-semibold">Новый раздел "Транспорт":</span> Покупайте транспорт (от скутеров до самолетов) и получайте 3% дохода от стоимости каждые 4 секунды.</p>
+                <p>💰 <span class="font-semibold">Система Кредитов:</span> Нужны деньги? Возьмите кредит! Но не забывайте погасить его вовремя, чтобы избежать штрафов.</p>
+                <p>↔️ <span class="font-semibold">Улучшенная Навигация:</span> Нижняя панель теперь прокручивается для удобного доступа ко всем разделам.</p>
+                <p>🗑️ <span class="font-semibold">Удаление Промокодов:</span> Система промокодов была убрана из игры.</p>
+            </div>
+        </div>
+        <button id="close-update-btn" class="btn-action bg-blue-600 hover:bg-blue-700 text-white w-full mt-4 flex-shrink-0">Продолжить</button>
+    </div>
+</div>
+
+<!-- Оверлей загрузки -->
 <div id="loading-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center z-50">
     <div class="text-xl font-semibold flex items-center space-x-2">
-        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
+        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
         Загрузка рынка...
     </div>
 </div>
+
+<!-- Оверлей принудительной продажи -->
+<div id="force-sell-overlay" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4">
+    <div class="card max-w-lg w-full text-center border-4 border-red-500">
+        <h2 class="text-3xl font-bold text-red-400 mb-4">Требуется Погашение Кредита!</h2>
+        <p class="text-gray-300 mb-2">На вашем балансе недостаточно средств для автоматического списания долга.</p>
+        <p id="force-sell-debt-info" class="text-lg font-semibold text-white mb-6">Остаток долга: 0.00 грн</p>
+        <p class="text-gray-400">Пожалуйста, продайте активы (акции, транспорт, недвижимость, бизнес), чтобы пополнить баланс и избежать дальнейших штрафов.</p>
+    </div>
+</div>
+
 
 <div class="container-app hidden" id="app-container">
     <header class="mb-6 pb-4 border-b border-gray-700">
@@ -212,7 +165,7 @@
         <p class="text-gray-400">Торгуйте, следите за ценами и управляйте своим портфелем.</p>
     </header>
 
-    <!-- Информация о пользователе и балансе -->
+    <!-- Информация о пользователе -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div class="card md:col-span-2">
             <h2 class="text-xl font-semibold mb-3 text-blue-400">Мой Портфель</h2>
@@ -220,8 +173,9 @@
                 <div class="mb-3 sm:mb-0">
                     <p class="text-gray-400 text-sm">Баланс (UAH)</p>
                     <p id="player-balance" class="text-3xl font-bold text-white">0.00</p>
-                    <p id="passive-income-info" class="text-sm font-medium text-green-500 mt-1">Доход (Квартиры): 0.00 грн / 15 сек</p>
-                    <p id="business-income-info" class="text-sm font-medium text-orange-500 mt-1">Доход (Бизнес): 0.00 грн / 18 сек</p>
+                    <p id="passive-income-info" class="text-sm font-medium text-green-500 mt-1">Доход (Квартиры): 0.00 грн / 8 сек</p>
+                    <p id="business-income-info" class="text-sm font-medium text-orange-500 mt-1">Доход (Бизнес): 0.00 грн / 6 сек</p>
+                    <p id="transport-income-info" class="text-sm font-medium text-violet-500 mt-1">Доход (Транспорт): 0.00 грн / 4 сек</p>
                 </div>
                 <div>
                     <p class="text-gray-400 text-sm">Ваш ID:</p>
@@ -231,1397 +185,234 @@
         </div>
         <div class="card flex flex-col justify-center">
              <h2 class="text-xl font-semibold mb-2 text-blue-400">Общее Состояние</h2>
-             <p class="text-gray-400 text-sm">Обновление цен / Лимитов акций:</p>
-             <p id="limit-countdown" class="text-xl font-bold text-yellow-400">00:00</p>
-             <p class="text-gray-400 text-sm mt-3">Пассивный доход (Квартиры) через:</p>
-             <p id="income-countdown" class="text-xl font-bold text-green-400">00</p>
-             <p class="text-gray-400 text-sm mt-3">Доход от Бизнеса через:</p>
-             <p id="business-countdown" class="text-xl font-bold text-orange-400">00</p>
-             <p class="text-gray-400 text-sm mt-3">Промо-бонус (2 мин.):</p>
-             <p id="promo-timer" class="text-xl font-bold">В ОЖИДАНИИ</p>
+             <div class="grid grid-cols-2 gap-x-4">
+                 <div>
+                    <p class="text-gray-400 text-sm">Цены/Лимиты:</p><p id="limit-countdown" class="text-lg font-bold text-yellow-400">00:00</p>
+                    <p class="text-gray-400 text-sm mt-2">Доход (Кв.):</p><p id="income-countdown" class="text-lg font-bold text-green-400">00</p>
+                 </div>
+                 <div>
+                    <p class="text-gray-400 text-sm">Доход (Биз.):</p><p id="business-countdown" class="text-lg font-bold text-orange-400">00</p>
+                    <p class="text-gray-400 text-sm mt-2">Доход (Тр.):</p><p id="transport-countdown" class="text-lg font-bold text-violet-400">00</p>
+                 </div>
+             </div>
+             <p class="text-gray-400 text-sm mt-2 border-t border-gray-700 pt-2">Погашение кредита через:</p>
+             <p id="loan-timer-display" class="text-lg font-bold text-pink-400">Нет активных кредитов</p>
         </div>
     </div>
 
-    <!-- Раздел рынка, квартир, бизнеса и инвентаря, теперь управляется JS для табов -->
+    <!-- Основной контент -->
     <div id="main-content-sections">
         
-        <!-- Секция Рынка (по умолчанию видна) -->
-        <div id="market-section" class="main-content-section">
-            <div class="card mb-6 lg:mb-0">
-                <h2 class="text-2xl font-semibold mb-4">Биржа (Акции)</h2>
-                <div id="market-list" class="space-y-4">
-                    <p class="text-gray-500">Загрузка данных...</p>
-                </div>
-            </div>
-        </div>
+        <!-- Секция Рынка -->
+        <div id="market-section" class="main-content-section"><div class="card"><h2 class="text-2xl font-semibold mb-4">Биржа (Акции)</h2><div id="market-list" class="space-y-4"></div></div></div>
 
-        <!-- Секция Квартир (по умолчанию скрыта) -->
-        <div id="real-estate-section" class="main-content-section hidden">
-            <div class="card mb-6">
-                <h2 class="text-2xl font-semibold mb-4">Квартиры (Недвижимость)</h2>
-                <p class="text-gray-400 text-sm mb-4">
-                    Магазин обновляется каждые 3 минуты. Доступность ограничена!
-                    <span id="apartment-countdown" class="font-bold text-yellow-400 ml-2">00:00</span>
-                </p>
-                <div id="apartment-list" class="space-y-4">
-                    <p class="text-gray-500">Загрузка данных о недвижимости...</p>
-                </div>
-            </div>
-        </div>
+        <!-- Секция Квартир -->
+        <div id="real-estate-section" class="main-content-section hidden"><div class="card"><h2 class="text-2xl font-semibold mb-4">Квартиры (Недвижимость)</h2><p class="text-gray-400 text-sm mb-4">Магазин обновляется каждые 3 минуты. <span id="apartment-countdown" class="font-bold text-yellow-400 ml-2">00:00</span></p><div id="apartment-list" class="space-y-4"></div></div></div>
         
-        <!-- Секция Бизнеса (по умолчанию скрыта) -->
-        <div id="business-section" class="main-content-section hidden">
-            <div class="card mb-6">
-                <h2 class="text-2xl font-semibold mb-4">Бизнес</h2>
-                <p class="text-gray-400 mb-4">
-                    Инвестируйте в свой бизнес! Прибыль: <span class="font-bold text-orange-400">0.90% от вложений</span> каждые <span class="font-bold text-orange-400">18 секунд</span>.
-                    <span id="business-count" class="font-bold text-white ml-2">0/20</span>
-                </p>
-                
-                <!-- Форма открытия бизнеса -->
-                <div class="card bg-gray-900 mb-6">
-                    <h3 class="text-xl font-semibold mb-3">Открыть новый бизнес</h3>
-                    <div class="space-y-4">
-                        <input type="text" id="business-name-input" placeholder="Название бизнеса"
-                               class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-orange-500 focus:border-orange-500" />
-                        <input type="number" id="business-investment-input" placeholder="Сумма инвестиций (от 1 грн)"
-                               class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-orange-500 focus:border-orange-500" />
-                        <button id="open-business-btn" onclick="handleOpenBusiness()" class="btn-action btn-open-business w-full">
-                            Открыть Бизнес
-                        </button>
-                    </div>
-                </div>
-                
-                <h3 class="text-xl font-semibold mb-3">Мои Бизнесы</h3>
-                <div id="business-list" class="space-y-4">
-                    <p class="text-gray-500">У вас пока нет бизнесов.</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Секция Промокодов (НОВАЯ) -->
-        <div id="promocodes-section" class="main-content-section hidden">
-            <div class="card mb-6">
-                <h2 class="text-2xl font-semibold mb-4 text-blue-400">Промокоды</h2>
-                <p class="text-gray-400 mb-6">Введите специальный код, чтобы получить временный или постоянный бонус.</p>
-                
-                <div class="card bg-gray-900 p-6">
-                    <h3 class="text-xl font-semibold mb-3">Активация Бонуса</h3>
-                    <div class="flex space-x-3">
-                        <input type="text" id="promo-code-input" placeholder="Введите промокод..."
-                               class="flex-grow p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-blue-500 focus:border-blue-500" />
-                        <button id="submit-promo-code-btn" onclick="handlePromoCode()" class="btn-action btn-promo-submit">
-                            Активировать
-                        </button>
-                    </div>
-                    
-                    <div id="promo-status" class="mt-4 p-3 bg-gray-800 rounded-lg">
-                        <p class="text-sm text-gray-400">Статус активного бонуса (2 мин., +50%/сек.):</p>
-                        <p id="current-promo-status" class="text-lg font-bold mt-1 text-red-500">Ожидание...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Секция Транспорта -->
+        <div id="transport-section" class="main-content-section hidden"><div class="card"><h2 class="text-2xl font-semibold mb-4">Транспорт</h2><p class="text-gray-400 text-sm mb-4">Магазин обновляется каждые 3 минуты. Доход: 3% от стоимости каждые 4 секунды.<span id="transport-store-countdown" class="font-bold text-yellow-400 ml-2">00:00</span></p><div id="transport-list" class="space-y-4"></div></div></div>
 
-        <!-- Секция Инвентаря (по умолчанию скрыта) -->
-        <div id="inventory-section" class="main-content-section hidden">
-            <div class="card mb-6">
-                <h2 class="text-2xl font-semibold mb-4">Инвентарь</h2>
-                <div id="inventory-list" class="space-y-4">
-                    <p class="text-gray-500">Портфель пуст.</p>
-                </div>
-            </div>
-        </div>
+        <!-- Секция Бизнеса -->
+        <div id="business-section" class="main-content-section hidden"><div class="card"><h2 class="text-2xl font-semibold mb-4">Бизнес</h2><p class="text-gray-400 mb-4">Прибыль: <span class="font-bold text-orange-400">0.90% от вложений</span> каждые <span class="font-bold text-orange-400">6 секунд</span>. Лимит: <span id="business-count" class="font-bold text-white ml-2">0/20</span></p><div class="card bg-gray-900 mb-6"><h3 class="text-xl font-semibold mb-3">Открыть новый бизнес</h3><div class="space-y-4"><input type="text" id="business-name-input" placeholder="Название бизнеса" class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-orange-500 focus:border-orange-500" /><input type="number" id="business-investment-input" placeholder="Сумма инвестиций (от 1 грн)" class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-orange-500 focus:border-orange-500" /><button id="open-business-btn" onclick="handleOpenBusiness()" class="btn-action btn-open-business w-full">Открыть Бизнес</button></div></div><h3 class="text-xl font-semibold mb-3">Мои Бизнесы</h3><div id="business-list" class="space-y-4"></div></div></div>
+        
+        <!-- Секция Кредитов -->
+        <div id="credits-section" class="main-content-section hidden"><div class="card"><h2 class="text-2xl font-semibold mb-4 text-pink-400">Кредитование</h2><div id="credit-status-section"></div><div id="take-credit-section" class="hidden mt-6 card bg-gray-900"><h3 class="text-xl font-semibold mb-3">Взять Кредит</h3><p class="text-gray-400 text-sm mb-4">Комиссия за погашение: <span class="font-bold text-white">20%</span>. Срок до авто-списания: <span class="font-bold text-white">5 минут</span>.</p><div class="space-y-4"><p class="text-gray-300">Максимально доступно: <span id="max-loan-amount" class="font-bold text-lg text-white">0.00 грн</span></p><input type="number" id="loan-amount-input" placeholder="Сумма кредита" class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-pink-500 focus:border-pink-500" /><button onclick="handleTakeLoan()" class="btn-action btn-credit w-full">Взять Кредит</button></div></div></div></div>
+
+        <!-- Секция Инвентаря -->
+        <div id="inventory-section" class="main-content-section hidden"><div class="card"><h2 class="text-2xl font-semibold mb-4">Инвентарь</h2><div id="inventory-list" class="space-y-4"></div></div></div>
     </div>
 </div>
 
-<!-- Модальное окно сообщения (ПОЗИЦИЯ СВЕРХУ) -->
+<!-- Модальное окно сообщения -->
 <div id="message-box" class="fixed bg-gray-700 text-white p-4 rounded-lg shadow-xl hidden z-50"></div>
 
-<!-- Нижняя навигационная панель (видима только на мобильных устройствах) -->
+<!-- Нижняя навигационная панель -->
 <footer id="nav-bar" class="fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 p-2 z-40">
-    <div class="flex justify-around max-w-xl mx-auto">
-        <!-- Кнопка Биржа -->
-        <button id="nav-market" onclick="showSection('market')" 
-                class="relative nav-item-active text-blue-400 p-2 rounded-lg hover:text-white transition-colors flex flex-col items-center text-xs">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-            Биржа
-        </button>
-        <!-- Кнопка Квартиры -->
-        <button id="nav-real-estate" onclick="showSection('real-estate')" 
-                class="relative text-gray-400 p-2 rounded-lg hover:text-white transition-colors flex flex-col items-center text-xs">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5a2 2 0 00-2 2v6a2 2 0 002 2h14a2 2 0 002-2v-6a2 2 0 00-2-2zM5 11V9a2 2 0 012-2h10a2 2 0 012 2v2M8 15h.01M16 15h.01"></path></svg>
-            Квартиры
-        </button>
-        <!-- Кнопка Бизнес -->
-        <button id="nav-business" onclick="showSection('business')" 
-                class="relative text-gray-400 p-2 rounded-lg hover:text-white transition-colors flex flex-col items-center text-xs">
-            <!-- Стилизованная иконка бизнеса -->
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.565 23.565 0 0112 15c-3.185 0-6.223-.56-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M12 20h.01M12 17h.01M12 14h.01M12 11h.01M12 8h.01M12 5h.01M19 11H5a2 2 0 00-2 2v6a2 2 0 002 2h14a2 2 0 002-2v-6a2 2 0 00-2-2z"></path></svg>
-            Бизнес
-        </button>
-        <!-- Кнопка Промокоды (НОВАЯ) -->
-        <button id="nav-promocodes" onclick="showSection('promocodes')" 
-                class="relative text-gray-400 p-2 rounded-lg hover:text-white transition-colors flex flex-col items-center text-xs">
-            <!-- Иконка подарка/бонуса -->
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            Промо
-        </button>
-        <!-- Кнопка Инвентарь -->
-        <button id="nav-inventory" onclick="showSection('inventory')" 
-                class="relative text-gray-400 p-2 rounded-lg hover:text-white transition-colors flex flex-col items-center text-xs">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-9 0h18a2 2 0 002-2V8a2 2 0 00-2-2H3a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
-            Инвентарь
-        </button>
+    <div id="nav-scroll-container">
+        <div class="flex items-center space-x-2 px-2">
+            <!-- Кнопка Биржа -->
+            <button id="nav-market" onclick="showSection('market')" class="flex-shrink-0 nav-item-active text-blue-400 p-2 rounded-lg hover:text-white transition-colors flex flex-col items-center text-xs w-20"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>Биржа</button>
+            <!-- Кнопка Квартиры -->
+            <button id="nav-real-estate" onclick="showSection('real-estate')" class="flex-shrink-0 text-gray-400 p-2 rounded-lg hover:text-white transition-colors flex flex-col items-center text-xs w-20"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5a2 2 0 00-2 2v6a2 2 0 002 2h14a2 2 0 002-2v-6a2 2 0 00-2-2zM5 11V9a2 2 0 012-2h10a2 2 0 012 2v2"></path></svg>Квартиры</button>
+            <!-- Кнопка Транспорт -->
+            <button id="nav-transport" onclick="showSection('transport')" class="flex-shrink-0 text-gray-400 p-2 rounded-lg hover:text-white transition-colors flex flex-col items-center text-xs w-20"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 16v-2m4-14h2m-16 0h2m14 4v2m-16 0v2m4 4h2m-2 4h2m-4-4h.01M12 8h.01M8 12h.01M16 12h.01"></path></svg>Транспорт</button>
+            <!-- Кнопка Бизнес -->
+            <button id="nav-business" onclick="showSection('business')" class="flex-shrink-0 text-gray-400 p-2 rounded-lg hover:text-white transition-colors flex flex-col items-center text-xs w-20"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.565 23.565 0 0112 15c-3.185 0-6.223-.56-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M12 20h.01M12 17h.01M12 14h.01M12 11h.01M12 8h.01M12 5h.01M19 11H5a2 2 0 00-2 2v6a2 2 0 002 2h14a2 2 0 002-2v-6a2 2 0 00-2-2z"></path></svg>Бизнес</button>
+            <!-- Кнопка Кредиты -->
+            <button id="nav-credits" onclick="showSection('credits')" class="flex-shrink-0 text-gray-400 p-2 rounded-lg hover:text-white transition-colors flex flex-col items-center text-xs w-20"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01M12 6v-1h4a1 1 0 011 1v12a1 1 0 01-1 1h-4v-1m-4 0v1H8a1 1 0 01-1-1V7a1 1 0 011-1h4V6m-4 0V5a1 1 0 011-1h4a1 1 0 011 1v1M5 12h14"></path></svg>Кредиты</button>
+            <!-- Кнопка Инвентарь -->
+            <button id="nav-inventory" onclick="showSection('inventory')" class="flex-shrink-0 text-gray-400 p-2 rounded-lg hover:text-white transition-colors flex flex-col items-center text-xs w-20"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-9 0h18a2 2 0 002-2V8a2 2 0 00-2-2H3a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>Инвентарь</button>
+        </div>
     </div>
 </footer>
 
 
 <script type="module">
-    // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ (Локальное состояние) ---
+    // --- ВЕРСИЯ ИГРЫ ---
+    const CURRENT_VERSION = '1.4.0';
+    const LOCAL_STORAGE_KEY_UPDATE_SEEN = `stockSimUpdateSeen_${CURRENT_VERSION}`;
+
+    // --- ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ---
     let userId = null;
-    let portfolio = { balance: 0, inventory: {}, realEstate: {}, businesses: [], promoCodeUsed: false }; // ДОБАВЛЕНО: promoCodeUsed
+    let portfolio = { 
+        balance: 0, 
+        inventory: {}, 
+        realEstate: {}, 
+        businesses: [],
+        transport: {},
+        activeLoan: null
+    };
     let currentPrices = {}; 
     let isMarketEngineRunning = false;
     let marketLimits = {}; 
     let lastPrevPrices = {}; 
     let limitTimerRemaining = 0; 
     let apartmentTimerRemaining = 0; 
-    let incomeTimerRemaining = 0; 
-    let businessIncomeTimerRemaining = 0; 
+    let transportStoreTimerRemaining = 0;
     
     // --- КОНСТАНТЫ ИНТЕРВАЛОВ (мс) ---
-    const STOCK_LIMIT_REFRESH_INTERVAL = 60000; // 1 минута
-    const REAL_ESTATE_REFRESH_INTERVAL = 180000; // 3 минуты
-    const PRICE_UPDATE_INTERVAL_MIN = 5000; // 5 секунд
-    const PRICE_UPDATE_INTERVAL_MAX = 10000; // 10 секунд
+    const STOCK_LIMIT_REFRESH_INTERVAL = 60000;
+    const REAL_ESTATE_REFRESH_INTERVAL = 180000;
+    const TRANSPORT_REFRESH_INTERVAL = 180000;
+    const PRICE_UPDATE_INTERVAL_MIN = 5000;
+    const PRICE_UPDATE_INTERVAL_MAX = 10000;
     
-    // КОНСТАНТЫ ДОХОДА И ПРОДАЖИ
-    const PASSIVE_INCOME_INTERVAL = 15000; // Пассивный доход КВАРТИР (15 секунд)
-    const APARTMENT_FIXED_INCOME_RATE = 0.015; // 1.5% дохода от базовой цены
-    const APARTMENT_SALE_FACTOR = 0.60; // 60% от базовой цены продажи
+    // КОНСТАНТЫ ДОХОДА
+    const PASSIVE_INCOME_INTERVAL = 8000;
+    const APARTMENT_FIXED_INCOME_RATE = 0.015;
+    const APARTMENT_SALE_FACTOR = 0.60;
+    const BUSINESS_INCOME_INTERVAL = 6000;
+    const BUSINESS_INCOME_RATE = 0.0090;
+    const TRANSPORT_INCOME_INTERVAL = 4000;
+    const TRANSPORT_INCOME_RATE = 0.03;
+    const TRANSPORT_SALE_FACTOR = 0.70;
 
-    const BUSINESS_INCOME_INTERVAL = 18000; // Пассивный доход БИЗНЕСА (18 секунд)
-    const BUSINESS_INCOME_RATE = 0.0090; // 0.90% дохода от инвестиций
+    // КОНСТАНТЫ КРЕДИТА
+    const LOAN_REPAYMENT_FEE = 1.20;
+    const LOAN_GRACE_PERIOD = 300000;
+    const LOAN_AUTO_DEDUCT_INTERVAL = 120000;
+    const LOAN_AUTO_DEDUCT_PERCENT = 0.10;
 
-    const MAX_SIM_PRICE = 50000000.00; // Максимальный предел для расчета лимитов
-    const MAX_BUSINESSES = 20; // Максимальное количество бизнесов
-    
-    // КОНСТАНТЫ ПРОМОКОДА (НОВЫЕ)
-    const TARGET_PROMO_CODE = "Я люблю булочку з маком";
-    const PROMO_DURATION_SECONDS = 120; // 2 минуты
-    const PROMO_INCOME_RATE_PER_SEC = 0.50; // 50% от инвестиций в секунду
-    let isPromoActive = false;
-    let promoIncomeInterval = null; 
+    const MAX_SIM_PRICE = 50000000.00;
+    const MAX_BUSINESSES = 20;
+    const initialBalance = 500.00;
 
-    // Данные для инициализации
-    const initialBalance = 500.00; // Начальный баланс
-
-    // --- ДАННЫЕ АКТИВОВ (АКЦИЙ) ---
-    const initialPrices = {
-        // НОВЫЕ СВЕРХДОРОГИЕ АКЦИИ (добавлены по запросу)
-        'NOVA': 37000000.00, 'AETHER': 27000000.00, 'ZETA': 14000000.00, 
-        'ULTRA': 8000000.00, 'COSMO': 5800000.00, 'GIANT': 4300000.00, 'STAR': 3300000.00, 
-        
-        // СТАРЫЕ АКТИВЫ
-        'TITAN': 4500000.00, 'QUANT': 3500000.00, 'SPACE': 1250000.00, 
-        'ROBOT': 750000.00, 'CYBER': 580000.00, 'LUX_H': 240000.00, 
-        'MINES': 150000.00, 'BANK': 98000.00, 'HEALTH': 55000.00,
-        'BIO': 27000.00, 'MEDIA': 22000.00, 'GREEN': 11000.00,
-        'NEW_T': 9200.00, 
-        'GALAXY': 6850.00, 'GOLDX': 4520.00, 'PHARMA': 3100.00, 'AERO': 1850.00,
-        'ECOT': 980.00, 'DREAM': 640.00, 'STEEL': 350.00, 'FOOD': 210.00,
-        'MERC': 150.00, 'CRYP': 95.00, 'OIL': 75.00, 'SOFT': 48.00,
-        'MINI': 27.00, 'WATER': 18.00, 'CANDY': 14.50,
-    };
-
-    const assetNames = {
-        // НОВЫЕ СВЕРХДОРОГИЕ АКЦИИ
-        'NOVA': 'Нова Энерджи (Термоядерный Синтез)', 'AETHER': 'Эфир Глобал (Квантовые Сети)',
-        'ZETA': 'Зета Холдинг (Венчурный Капитал)', 'ULTRA': 'Ультра Корп. (Синтетические Технологии)',
-        'COSMO': 'Космо Индастриз (Продвинутое Производство)', 'GIANT': 'Гигант Строй (Мега-Инфраструктура)',
-        'STAR': 'СтарЛайт Групп (Транснациональные Сети)',
-
-        // СТАРЫЕ АКТИВЫ
-        'TITAN': 'Титан Индастриз (Мегакорпорация)', 'QUANT': 'Квантовые Системы (Вычисления)',
-        'SPACE': 'Спейс Иксплорер (Космические Технологии)', 'ROBOT': 'РобоТехникс (AI и Автоматизация)',
-        'CYBER': 'КиберСейф (Продвинутая Безопасность)', 'LUX_H': 'Люкс Холдинг (Предметы Роскоши)',
-        'MINES': 'Редкие Металлы Инвест', 'BANK': 'Глобал Банк Центр', 
-        'HEALTH': 'Приватные Клиники (Мед. Услуги)', 'BIO': 'БиоФарм (Биотехнологии)',
-        'MEDIA': 'Медиа Групп 24/7', 'GREEN': 'Зеленая Энергетика Инвест',
-        'NEW_T': 'Новые Технологии Инвест',
-        'GALAXY': 'Глобальные Сети "Галактика"', 'GOLDX': 'Золотой Резерв',
-        'PHARMA': 'ФармЭкспресс', 'AERO': 'Аэрокосмические Системы',
-        'ECOT': 'Эко-Технологии Будущего', 'DREAM': 'Цифровые Развлечения "Мечта"',
-        'STEEL': 'СтальГрад Инвест', 'FOOD': 'Продуктовый Гигант "Урожай"',
-        'MERC': 'Меркурий Логистикс', 'CRYP': 'Крипто-Валютный Фонд',
-        'OIL': 'Нефтедобыча "Черный Алмаз"', 'SOFT': 'СофтВоркс ИТ',
-        'MINI': 'Мини-Завод "Прогресс"', 'WATER': 'Водные Ресурсы "Чистая Вода"',
-        'CANDY': 'Кондитерская Фабрика "Сладость"',
-    };
-
-    // ДАННЫЕ: Квартиры
-    let apartmentData = [
-        { key: 'STUDIO', name: 'Студия "Минимализм"', basePrice: 20000, incomeRate: 0.00 }, 
-        { key: 'ONE_BR', name: '1-комнатная "Комфорт"', basePrice: 85000, incomeRate: 0.00 }, 
-        { key: 'TWO_BR', name: '2-комнатная "Семейная"', basePrice: 195000, incomeRate: 0.00 }, 
-        { key: 'LUXE', name: 'Пентхаус "Престиж"', basePrice: 350000, incomeRate: 0.00 }, 
-    ];
-    
+    // --- ДАННЫЕ АКТИВОВ ---
+    const initialPrices = { 'NOVA': 37000000, 'AETHER': 27000000, 'ZETA': 14000000, 'ULTRA': 8000000, 'COSMO': 5800000, 'GIANT': 4300000, 'STAR': 3300000, 'TITAN': 4500000, 'QUANT': 3500000, 'SPACE': 1250000, 'ROBOT': 750000, 'CYBER': 580000, 'LUX_H': 240000, 'MINES': 150000, 'BANK': 98000, 'HEALTH': 55000, 'BIO': 27000, 'MEDIA': 22000, 'GREEN': 11000, 'NEW_T': 9200, 'GALAXY': 6850, 'GOLDX': 4520, 'PHARMA': 3100, 'AERO': 1850, 'ECOT': 980, 'DREAM': 640, 'STEEL': 350, 'FOOD': 210, 'MERC': 150, 'CRYP': 95, 'OIL': 75, 'SOFT': 48, 'MINI': 27, 'WATER': 18, 'CANDY': 14.50, };
+    const assetNames = { 'NOVA': 'Нова Энерджи', 'AETHER': 'Эфир Глобал', 'ZETA': 'Зета Холдинг', 'ULTRA': 'Ультра Корп.', 'COSMO': 'Космо Индастриз', 'GIANT': 'Гигант Строй', 'STAR': 'СтарЛайт Групп', 'TITAN': 'Титан Индастриз', 'QUANT': 'Квантовые Системы', 'SPACE': 'Спейс Иксплорер', 'ROBOT': 'РобоТехникс', 'CYBER': 'КиберСейф', 'LUX_H': 'Люкс Холдинг', 'MINES': 'Редкие Металлы', 'BANK': 'Глобал Банк', 'HEALTH': 'Приватные Клиники', 'BIO': 'БиоФарм', 'MEDIA': 'Медиа Групп', 'GREEN': 'Зеленая Энергетика', 'NEW_T': 'Новые Технологии', 'GALAXY': 'Сети "Галактика"', 'GOLDX': 'Золотой Резерв', 'PHARMA': 'ФармЭкспресс', 'AERO': 'Аэрокосмос', 'ECOT': 'Эко-Технологии', 'DREAM': 'Цифровые Развлечения', 'STEEL': 'СтальГрад', 'FOOD': 'Продуктовый Гигант', 'MERC': 'Меркурий Логистикс', 'CRYP': 'Крипто-Фонд', 'OIL': 'Нефтедобыча', 'SOFT': 'СофтВоркс ИТ', 'MINI': 'Мини-Завод', 'WATER': 'Водные Ресурсы', 'CANDY': 'Кондитерская Фабрика', };
+    let apartmentData = [ { key: 'STUDIO', name: 'Студия "Минимализм"', basePrice: 20000 }, { key: 'ONE_BR', name: '1-комнатная "Комфорт"', basePrice: 85000 }, { key: 'TWO_BR', name: '2-комнатная "Семейная"', basePrice: 195000 }, { key: 'LUXE', name: 'Пентхаус "Престиж"', basePrice: 450000 }, { key: 'MANSION', name: 'Особняк "Элита"', basePrice: 1200000 }, { key: 'VILLA', name: 'Вилла "Ультра-Люкс"', basePrice: 3500000 }, { key: 'ESTATE', name: 'Поместье "Империал"', basePrice: 10000000 }, ];
     let availableApartments = []; 
-    
-    // Инициализируем инвентарь для всех активов (по 0 шт.)
-    const initialInventory = Object.keys(initialPrices).reduce((acc, ticker) => {
-        acc[ticker] = { quantity: 0, totalCost: 0 }; 
-        return acc;
-    }, {});
-    
-    // Инициализируем инвентарь квартир (по 0 шт.)
-    const initialRealEstate = apartmentData.reduce((acc, apt) => {
-        acc[apt.key] = 0;
-        return acc;
-    }, {});
+    let transportData = [ { key: 'SCOOTER', name: 'Скутер', basePrice: 12000 }, { key: 'CAR_STD', name: 'Седан', basePrice: 40000 }, { key: 'BUS', name: 'Автобус', basePrice: 150000 }, { key: 'TRUCK', name: 'Грузовик', basePrice: 280000 }, { key: 'YACHT', name: 'Яхта', basePrice: 900000 }, { key: 'TRAIN', name: 'Поезд', basePrice: 2500000 }, { key: 'PLANE', name: 'Частный самолет', basePrice: 7000000 }, ];
+    let availableTransport = [];
 
-
-    // --- КЛЮЧИ LOCAL STORAGE ---
-    const LOCAL_STORAGE_KEY_PORTFOLIO = 'stockSimPortfolio';
+    // --- ИНИЦИАЛИЗАЦИЯ ИНВЕНТАРЯ ---
+    const initialInventory = Object.keys(initialPrices).reduce((acc, ticker) => ({ ...acc, [ticker]: { quantity: 0, totalCost: 0 } }), {});
+    const initialRealEstate = apartmentData.reduce((acc, apt) => ({ ...acc, [apt.key]: 0 }), {});
+    const initialTransport = transportData.reduce((acc, v) => ({ ...acc, [v.key]: 0 }), {});
+    
+    // Ключи Local Storage
+    const LOCAL_STORAGE_KEY_PORTFOLIO = 'stockSimPortfolio_v2';
     const LOCAL_STORAGE_KEY_USERID = 'stockSimUserId';
     
-    // --- UI ЭЛЕМЕНТЫ ---
-    const appContainer = document.getElementById('app-container');
-    const loadingOverlay = document.getElementById('loading-overlay');
-    const balanceEl = document.getElementById('player-balance');
-    const userIdEl = document.getElementById('user-id');
-    const marketListEl = document.getElementById('market-list');
-    const inventoryListEl = document.getElementById('inventory-list');
-    const apartmentListEl = document.getElementById('apartment-list'); 
-    const messageBoxEl = document.getElementById('message-box');
-    const limitCountdownEl = document.getElementById('limit-countdown');
-    const apartmentCountdownEl = document.getElementById('apartment-countdown'); 
-    const incomeCountdownEl = document.getElementById('income-countdown'); 
-    const businessCountdownEl = document.getElementById('business-countdown'); 
-    const passiveIncomeInfoEl = document.getElementById('passive-income-info'); 
-    const businessIncomeInfoEl = document.getElementById('business-income-info'); 
-    const businessListEl = document.getElementById('business-list');
-    const businessCountEl = document.getElementById('business-count');
-    const openBusinessBtn = document.getElementById('open-business-btn');
-    const promoTimerEl = document.getElementById('promo-timer'); // НОВЫЙ ЭЛЕМЕНТ
-    const promoCodeInput = document.getElementById('promo-code-input'); // НОВЫЙ ЭЛЕМЕНТ
-    const promoCodeSubmitButton = document.getElementById('submit-promo-code-btn'); // НОВЫЙ ЭЛЕМЕНТ
-    const currentPromoStatusEl = document.getElementById('current-promo-status'); // НОВЫЙ ЭЛЕМЕНТ
-
-
-    // Элементы для навигации
-    const marketSectionEl = document.getElementById('market-section');
-    const realEstateSectionEl = document.getElementById('real-estate-section'); 
-    const businessSectionEl = document.getElementById('business-section'); 
-    const promocodesSectionEl = document.getElementById('promocodes-section'); // НОВЫЙ ЭЛЕМЕНТ
-    const inventorySectionEl = document.getElementById('inventory-section');
-    const navMarketButton = document.getElementById('nav-market');
-    const navRealEstateButton = document.getElementById('nav-real-estate'); 
-    const navBusinessButton = document.getElementById('nav-business'); 
-    const navPromocodesButton = document.getElementById('nav-promocodes'); // НОВЫЙ ЭЛЕМЕНТ
-    const navInventoryButton = document.getElementById('nav-inventory');
-    
-
+    // UI Элементы
+    const appContainer = document.getElementById('app-container'), loadingOverlay = document.getElementById('loading-overlay');
+    const balanceEl = document.getElementById('player-balance'), userIdEl = document.getElementById('user-id');
+    const marketListEl = document.getElementById('market-list'), inventoryListEl = document.getElementById('inventory-list');
+    const apartmentListEl = document.getElementById('apartment-list'), transportListEl = document.getElementById('transport-list');
+    const businessListEl = document.getElementById('business-list'), businessCountEl = document.getElementById('business-count');
+    const messageBoxEl = document.getElementById('message-box'), forceSellOverlay = document.getElementById('force-sell-overlay');
+    const limitCountdownEl = document.getElementById('limit-countdown'), apartmentCountdownEl = document.getElementById('apartment-countdown');
+    const transportStoreCountdownEl = document.getElementById('transport-store-countdown'), incomeCountdownEl = document.getElementById('income-countdown');
+    const businessCountdownEl = document.getElementById('business-countdown'), transportCountdownEl = document.getElementById('transport-countdown');
+    const passiveIncomeInfoEl = document.getElementById('passive-income-info'), businessIncomeInfoEl = document.getElementById('business-income-info');
+    const transportIncomeInfoEl = document.getElementById('transport-income-info');
+    const loanTimerDisplayEl = document.getElementById('loan-timer-display');
+    const creditStatusSection = document.getElementById('credit-status-section');
+    const takeCreditSection = document.getElementById('take-credit-section');
+    const maxLoanAmountEl = document.getElementById('max-loan-amount');
+    const loanAmountInput = document.getElementById('loan-amount-input');
+    const updateOverlay = document.getElementById('update-overlay');
+    const closeUpdateBtn = document.getElementById('close-update-btn');
 
     // --- ФУНКЦИИ УТИЛИТЫ ---
+    const showMessage = (msg, type = 'info') => { let bgColor='bg-gray-700'; if(type==='success')bgColor='bg-green-600'; if(type==='error')bgColor='bg-red-600'; if(type==='warning')bgColor='bg-yellow-600'; if(type==='business')bgColor='bg-orange-600'; if(type==='credit')bgColor='bg-pink-600'; messageBoxEl.className=`fixed top-20 left-1/2 transform -translate-x-1/2 ${bgColor} text-white p-4 rounded-lg shadow-xl z-100 transition-opacity`; messageBoxEl.textContent=msg; messageBoxEl.classList.remove('hidden'); setTimeout(()=>messageBoxEl.classList.add('hidden'),3000); };
+    const formatCurrency = (amount) => (amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ")+' грн');
+    const formatTime = (seconds) => `${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
 
-    // Отображение сообщения (замена alert)
-    const showMessage = (msg, type = 'info') => {
-        let bgColor = 'bg-gray-700';
-        if (type === 'success') bgColor = 'bg-green-600';
-        if (type === 'error') bgColor = 'bg-red-600';
-        if (type === 'warning') bgColor = 'bg-yellow-600';
-        if (type === 'business') bgColor = 'bg-orange-600';
+    // --- LOCAL STORAGE ---
+    const loadPortfolio = () => { const storedData = localStorage.getItem(LOCAL_STORAGE_KEY_PORTFOLIO); let loaded = storedData ? JSON.parse(storedData) : {}; portfolio = { balance: loaded.balance || initialBalance, inventory: { ...initialInventory, ...loaded.inventory }, realEstate: { ...initialRealEstate, ...loaded.realEstate }, businesses: Array.isArray(loaded.businesses) ? loaded.businesses : [], transport: { ...initialTransport, ...loaded.transport }, activeLoan: loaded.activeLoan || null }; renderPortfolio(portfolio); };
+    const savePortfolio = () => { localStorage.setItem(LOCAL_STORAGE_KEY_PORTFOLIO, JSON.stringify(portfolio)); renderPortfolio(portfolio); };
+    const setupUser = () => { let id=localStorage.getItem(LOCAL_STORAGE_KEY_USERID); if(!id){id='LOCAL-'+Math.random().toString(36).substring(2,9).toUpperCase(); localStorage.setItem(LOCAL_STORAGE_KEY_USERID,id);} userId=id; userIdEl.textContent=userId; };
 
-        // Обновляем классы для позиционирования и цвета
-        messageBoxEl.className = `fixed top-20 left-1/2 transform -translate-x-1/2 ${bgColor} text-white p-4 rounded-lg shadow-xl z-50 transition-opacity`;
-        messageBoxEl.textContent = msg;
-        messageBoxEl.classList.remove('hidden');
+    // --- ДВИЖКИ ДОХОДОВ ---
+    const startIncomeEngine = (interval, countdownEl, calculationFunc, infoEl, infoText, incomeType) => { let timer = interval / 1000; const loop = () => { timer--; countdownEl.textContent = String(timer).padStart(2, '0'); if (timer <= 0) { const income = calculationFunc(); if (income > 0) { portfolio.balance += income; savePortfolio(); showMessage(`Доход (${incomeType}): +${formatCurrency(income)}`, 'success'); } timer = interval / 1000; } setTimeout(loop, 1000); }; loop(); };
+    const calculateApartmentIncome = () => { let total = 0; for (const [key, count] of Object.entries(portfolio.realEstate)) { if (count > 0) { const data = apartmentData.find(a => a.key === key); if (data) total += data.basePrice * APARTMENT_FIXED_INCOME_RATE * count; } } passiveIncomeInfoEl.textContent = `Доход (Квартиры): ${formatCurrency(total)} / ${PASSIVE_INCOME_INTERVAL/1000} сек`; return total; };
+    const calculateBusinessIncome = () => { let total = portfolio.businesses.reduce((sum, b) => sum + b.investment * BUSINESS_INCOME_RATE, 0); businessIncomeInfoEl.textContent = `Доход (Бизнес): ${formatCurrency(total)} / ${BUSINESS_INCOME_INTERVAL/1000} сек`; return total; };
+    const calculateTransportIncome = () => { let total = 0; for (const [key, count] of Object.entries(portfolio.transport)) { if (count > 0) { const data = transportData.find(t => t.key === key); if (data) total += data.basePrice * TRANSPORT_INCOME_RATE * count; } } transportIncomeInfoEl.textContent = `Доход (Транспорт): ${formatCurrency(total)} / ${TRANSPORT_INCOME_INTERVAL/1000} сек`; return total; };
 
-        setTimeout(() => {
-            messageBoxEl.classList.add('hidden');
-        }, 3000);
-    };
+    // --- ДВИЖКИ МАГАЗИНОВ И РЫНКА ---
+    const startStoreEngine = (interval, countdownEl, generatorFunc) => { let timer = interval / 1000; generatorFunc(); setInterval(generatorFunc, interval); const loop = () => { timer--; if(timer<=0) timer=interval/1000; countdownEl.textContent=formatTime(timer); setTimeout(loop, 1000); }; loop(); };
+    const generateShopItems = (data, volatility = 0.2) => data.map(item => { const limit = item.basePrice > 1000000 && Math.random() < 0.4 ? 0 : Math.floor(Math.random() * 5) + 1; const fluctuation = (Math.random() * volatility * 2) - volatility; const currentPrice = item.basePrice * (1 + fluctuation); return { ...item, currentPrice: Math.round(currentPrice / 100) * 100, availableLimit: limit }; });
+    const generateApartments = () => { availableApartments = generateShopItems(apartmentData); renderRealEstate(); };
+    const generateTransport = () => { availableTransport = generateShopItems(transportData); renderTransport(); };
+    const startMarketEngine = () => { if (isMarketEngineRunning) return; isMarketEngineRunning = true; currentPrices = { ...initialPrices }; renderMarket(currentPrices, {}); const marketLoop = () => { const prevPrices = { ...currentPrices }; lastPrevPrices = prevPrices; for (const [ticker, price] of Object.entries(currentPrices)) { let maxChange = (price > 1000000) ? 0.03 : 0.05; let minChange = -maxChange; const change = (Math.random() * (maxChange - minChange) + minChange); currentPrices[ticker] = Math.max(price * (1 + change), 0.01); } renderMarket(currentPrices, prevPrices); renderPortfolio(portfolio); const nextUpdate = Math.random() * (PRICE_UPDATE_INTERVAL_MAX - PRICE_UPDATE_INTERVAL_MIN) + PRICE_UPDATE_INTERVAL_MIN; setTimeout(marketLoop, nextUpdate); }; marketLoop(); };
+    const startStockLimitEngine = () => { const resetLimits = () => { marketLimits = Object.entries(currentPrices).reduce((acc, [ticker, price]) => { let limit; if (price >= 5000000 && Math.random() < 0.3) { limit = 0; } else if (price >= 10000000) { limit = 1; } else if (price >= 1000000) { limit = Math.floor(Math.random() * 2) + 1; } else { const normalized = Math.min(1, Math.max(0, (price - 14.5) / (MAX_SIM_PRICE - 14.5))); limit = 1 + ((1 - normalized) * 19); limit = Math.round(limit * (1 + (Math.random() * 0.5 - 0.25))); } acc[ticker] = Math.min(20, Math.max(1, limit)); return acc; }, {}); }; resetLimits(); setInterval(() => { resetLimits(); renderMarket(currentPrices, lastPrevPrices); showMessage("Лимиты акций обновлены!", 'info'); }, STOCK_LIMIT_REFRESH_INTERVAL); startStoreEngine(STOCK_LIMIT_REFRESH_INTERVAL, limitCountdownEl, ()=>{}); };
 
-    // Форматирование валюты в гривны
-    const formatCurrency = (amount) => {
-        // Округляем до 2 знаков для отображения
-        return amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + ' грн';
-    };
+    // --- ЛОГИКА ПОКУПКИ/ПРОДАЖИ ---
+    window.buyAsset = (ticker, amount) => { const price = currentPrices[ticker]; const cost = price * amount; if (portfolio.balance < cost) { showMessage("Недостаточно средств.", 'error'); return; } if (marketLimits[ticker] < amount) { showMessage(`Лимит на покупку ${ticker} исчерпан.`, 'error'); return; } marketLimits[ticker] -= amount; const item = portfolio.inventory[ticker]; portfolio.balance -= cost; item.quantity += amount; item.totalCost += cost; savePortfolio(); renderMarket(currentPrices, lastPrevPrices); showMessage(`Куплено ${amount} шт. ${ticker}.`, 'success'); };
+    window.sellAsset = (ticker, amount) => { const price = currentPrices[ticker]; const revenue = price * amount; const item = portfolio.inventory[ticker]; if (item.quantity < amount) { showMessage(`Недостаточно ${ticker} для продажи.`, 'error'); return; } let costOfSold = 0; if (item.quantity > 0) costOfSold = (item.totalCost / item.quantity) * amount; portfolio.balance += revenue; item.quantity -= amount; item.totalCost -= costOfSold; if(item.quantity<=0){item.quantity=0; item.totalCost=0;} savePortfolio(); showMessage(`Продано ${amount} шт. ${ticker}.`, 'success'); };
+    window.buyShopItem = (key, availableList, portfolioList, type) => { const item = availableList.find(i => i.key === key); if (!item) return; if (portfolio.balance < item.currentPrice) { showMessage("Недостаточно средств.", 'error'); return; } if (item.availableLimit <= 0) { showMessage(`Лимит на покупку исчерпан.`, 'error'); return; } item.availableLimit--; portfolio.balance -= item.currentPrice; portfolioList[key] = (portfolioList[key] || 0) + 1; savePortfolio(); if(type==='Квартира') renderRealEstate(); else if(type==='Транспорт') renderTransport(); showMessage(`Куплена 1 шт. "${item.name}".`, 'success'); };
+    window.sellShopItem = (key, portfolioList, dataList, saleFactor, type) => { if ((portfolioList[key] || 0) <= 0) return; const itemData = dataList.find(i => i.key === key); if (!itemData) return; const salePrice = itemData.basePrice * saleFactor; portfolio.balance += salePrice; portfolioList[key]--; savePortfolio(); showMessage(`Продана 1 шт. "${itemData.name}". Получено: ${formatCurrency(salePrice)}`, 'success'); };
+    window.handleOpenBusiness = () => { const name = document.getElementById('business-name-input').value.trim() || "Бизнес"; const investment = parseFloat(document.getElementById('business-investment-input').value); if (portfolio.businesses.length >= MAX_BUSINESSES) { showMessage(`Достигнут лимит: ${MAX_BUSINESSES} бизнесов.`, 'error'); return; } if (isNaN(investment) || investment < 1) { showMessage(`Сумма инвестиций должна быть > 1 грн.`, 'error'); return; } if (portfolio.balance < investment) { showMessage("Недостаточно средств.", 'error'); return; } portfolio.balance -= investment; portfolio.businesses.push({ id: 'id-'+Date.now(), name, investment }); savePortfolio(); renderBusinessSection(); document.getElementById('business-name-input').value=''; document.getElementById('business-investment-input').value=''; showMessage(`Бизнес "${name}" открыт!`, 'success'); };
+    window.sellBusiness = (id) => { const index = portfolio.businesses.findIndex(b => b.id === id); if (index === -1) return; const business = portfolio.businesses[index]; const salePrice = business.investment * (1.05 + Math.random() * 0.30); portfolio.balance += salePrice; portfolio.businesses.splice(index, 1); savePortfolio(); renderBusinessSection(); showMessage(`Бизнес "${business.name}" продан за ${formatCurrency(salePrice)}!`, 'success'); };
     
-    // Форматирование для маленького значка дохода
-    const formatBadgeCurrency = (amount) => {
-        const rounded = Math.round(amount);
-        if (amount === rounded) {
-            return `+${rounded}`;
-        }
-        return `+${amount.toFixed(1)}`; // Округляем до 1 знака после запятой для краткости
-    }
-    
-    // Генерация простого уникального ID
-    const generateId = () => 'id-' + Math.random().toString(36).substring(2, 9);
+    // --- КРЕДИТЫ ---
+    let loanEngineInterval = null;
+    const calculateTotalIncomePerMinute = () => (calculateApartmentIncome()*(60000/PASSIVE_INCOME_INTERVAL) + calculateBusinessIncome()*(60000/BUSINESS_INCOME_INTERVAL) + calculateTransportIncome()*(60000/TRANSPORT_INCOME_INTERVAL));
+    const calculateMaxLoan = () => (calculateTotalIncomePerMinute() * 10) + (portfolio.balance * 0.5);
+    window.handleTakeLoan = () => { const maxLoan = calculateMaxLoan(); const amount = parseFloat(loanAmountInput.value); if(isNaN(amount) || amount <= 0 || amount > maxLoan) { showMessage('Некорректная сумма кредита.', 'error'); return; } portfolio.balance += amount; portfolio.activeLoan = { amount: amount, debt: amount * LOAN_REPAYMENT_FEE, dueDate: Date.now() + LOAN_GRACE_PERIOD, autoDeductDate: Date.now() + LOAN_GRACE_PERIOD + LOAN_AUTO_DEDUCT_INTERVAL }; loanAmountInput.value = ''; savePortfolio(); startLoanEngine(); showMessage(`Вы взяли кредит на ${formatCurrency(amount)}. Нужно вернуть ${formatCurrency(portfolio.activeLoan.debt)}`, 'credit'); };
+    window.handleRepayLoan = () => { const debt = portfolio.activeLoan.debt; if(portfolio.balance < debt) { showMessage('Недостаточно средств для погашения кредита.', 'error'); return; } portfolio.balance -= debt; portfolio.activeLoan = null; if(loanEngineInterval) clearInterval(loanEngineInterval); loanTimerDisplayEl.textContent = 'Нет активных кредитов'; savePortfolio(); showMessage('Кредит успешно погашен!', 'success'); };
+    const startLoanEngine = () => { if (!portfolio.activeLoan) { if (loanEngineInterval) clearInterval(loanEngineInterval); renderCreditsSection(); return; } if(loanEngineInterval) clearInterval(loanEngineInterval); loanEngineInterval = setInterval(() => { const loan = portfolio.activeLoan; if(!loan) { clearInterval(loanEngineInterval); loanTimerDisplayEl.textContent = 'Нет активных кредитов'; return; } const now = Date.now(); let displayMessage = ''; if(now < loan.dueDate) { const remaining = Math.round((loan.dueDate - now) / 1000); displayMessage = `До авто-списания: ${formatTime(remaining)}`; } else { const remainingForDeduct = Math.round((loan.autoDeductDate - now) / 1000); displayMessage = `Списание через: ${formatTime(remainingForDeduct)}`; if(now >= loan.autoDeductDate) { const deductionAmount = loan.debt * LOAN_AUTO_DEDUCT_PERCENT; if(portfolio.balance >= deductionAmount) { portfolio.balance -= deductionAmount; loan.debt -= deductionAmount; loan.autoDeductDate = now + LOAN_AUTO_DEDUCT_INTERVAL; if(loan.debt <= 0) { portfolio.activeLoan = null; showMessage('Кредит полностью списан автоматически!', 'success'); } else { showMessage(`Авто-списание: -${formatCurrency(deductionAmount)}`, 'warning'); } savePortfolio(); } else { forceSellOverlay.classList.remove('hidden'); document.getElementById('force-sell-debt-info').textContent = `Остаток долга: ${formatCurrency(loan.debt)}`; } } } loanTimerDisplayEl.textContent = displayMessage; }, 1000); };
 
-
-    // --- ФУНКЦИИ LOCAL STORAGE ---
-
-    /**
-     * Загружает портфель из localStorage или инициализирует его.
-     */
-    const loadPortfolio = () => {
-        const storedData = localStorage.getItem(LOCAL_STORAGE_KEY_PORTFOLIO);
-        if (storedData) {
-            try {
-                const loadedPortfolio = JSON.parse(storedData);
-                
-                // Объединяем загруженные данные с начальными, чтобы добавить новые поля
-                portfolio.balance = loadedPortfolio.balance || initialBalance;
-                
-                // Акции
-                portfolio.inventory = { ...initialInventory }; 
-                if (loadedPortfolio.inventory) {
-                    for (const [ticker, item] of Object.entries(loadedPortfolio.inventory)) {
-                         if (portfolio.inventory.hasOwnProperty(ticker)) {
-                             if (typeof item === 'object' && item !== null && item.quantity !== undefined) {
-                                 portfolio.inventory[ticker] = { quantity: item.quantity || 0, totalCost: item.totalCost || 0 };
-                             } else if (typeof item === 'number') { 
-                                 portfolio.inventory[ticker] = { quantity: item, totalCost: 0 };
-                             }
-                         }
-                    }
-                }
-                
-                // Квартиры
-                portfolio.realEstate = { ...initialRealEstate, ...loadedPortfolio.realEstate };
-                
-                // Бизнес
-                portfolio.businesses = Array.isArray(loadedPortfolio.businesses) ? loadedPortfolio.businesses.map(b => {
-                    b.incomeRate = BUSINESS_INCOME_RATE;
-                    b.incomePerCycle = b.investment * BUSINESS_INCOME_RATE;
-                    return b;
-                }) : [];
-
-                // Промокод: Загружаем статус использования
-                portfolio.promoCodeUsed = loadedPortfolio.promoCodeUsed === true;
-
-
-            } catch (e) {
-                console.error("Ошибка парсинга данных портфеля из localStorage:", e);
-                portfolio = { balance: initialBalance, inventory: initialInventory, realEstate: initialRealEstate, businesses: [], promoCodeUsed: false };
-            }
-        } else {
-            portfolio = { balance: initialBalance, inventory: initialInventory, realEstate: initialRealEstate, businesses: [], promoCodeUsed: false };
-        }
-        renderPortfolio(portfolio);
-    };
-
-    /**
-     * Сохраняет портфель в localStorage.
-     */
-    const savePortfolio = () => {
-        localStorage.setItem(LOCAL_STORAGE_KEY_PORTFOLIO, JSON.stringify(portfolio));
-        renderPortfolio(portfolio);
-    };
-
-    /**
-     * Устанавливает или генерирует локальный ID пользователя.
-     */
-    const setupUser = () => {
-        let storedUserId = localStorage.getItem(LOCAL_STORAGE_KEY_USERID);
-        if (!storedUserId) {
-            // Генерируем простой локальный ID
-            storedUserId = 'LOCAL-' + Math.random().toString(36).substring(2, 9).toUpperCase();
-            localStorage.setItem(LOCAL_STORAGE_KEY_USERID, storedUserId);
-        }
-        userId = storedUserId;
-        userIdEl.textContent = userId;
-    };
-
-
-    // --- МЕХАНИЗМЫ РЫНКА АКЦИЙ, КВАРТИР, ДОХОДА ---
-    
-    // ... (generateMaxCapacity, resetMarketLimits, startStockLimitEngine, startStockCountdown, startMarketEngine - БЕЗ ИЗМЕНЕНИЙ) ...
-    const generateMaxCapacity = (price) => {
-        const MIN_PRICE = 14.50; 
-        const MAX_LIMIT = 20; 
-        const MIN_LIMIT = 1;  
-
-        if (price >= 10000000) { // Для ультрадорогих акций
-            return 1;
-        } else if (price >= 1000000) {
-            return Math.floor(Math.random() * 2) + 1; // 1-2 шт.
-        }
-
-        const normalizedPrice = Math.min(1, Math.max(0, (price - MIN_PRICE) / (MAX_SIM_PRICE - MIN_PRICE)));
-        const inverseRatio = 1 - normalizedPrice; 
-        
-        let baseLimit = MIN_LIMIT + (inverseRatio * (MAX_LIMIT - MIN_LIMIT));
-        const volatility = (Math.random() * 0.5 - 0.25); 
-        let finalLimit = Math.round(baseLimit * (1 + volatility));
-
-        return Math.min(MAX_LIMIT, Math.max(MIN_LIMIT, finalLimit));
-    }
-
-    const resetMarketLimits = () => {
-        const newLimits = {};
-        for (const [ticker, price] of Object.entries(currentPrices)) {
-            const PRICE_THRESHOLD = 5000000.00; 
-            const UNAVAILABILITY_CHANCE = 0.3; 
-            
-            if (price >= PRICE_THRESHOLD && Math.random() < UNAVAILABILITY_CHANCE) {
-                newLimits[ticker] = 0;
-                continue; 
-            }
-            newLimits[ticker] = generateMaxCapacity(price);
-        }
-        marketLimits = newLimits;
-    }
-    
-    const startStockLimitEngine = () => {
-        resetMarketLimits();
-        
-        setInterval(() => {
-            resetMarketLimits();
-            renderMarket(currentPrices, lastPrevPrices);
-            showMessage("Лимиты покупки акций обновлены!", 'info');
-        }, STOCK_LIMIT_REFRESH_INTERVAL);
-    }
-    
-    const startStockCountdown = () => {
-        limitTimerRemaining = STOCK_LIMIT_REFRESH_INTERVAL / 1000; 
-
-        const countdownLoop = () => {
-            limitTimerRemaining--;
-
-            const minutes = Math.floor(limitTimerRemaining / 60);
-            const seconds = limitTimerRemaining % 60;
-
-            const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            limitCountdownEl.textContent = formattedTime;
-
-            if (limitTimerRemaining <= 0) {
-                limitTimerRemaining = STOCK_LIMIT_REFRESH_INTERVAL / 1000;
-            }
-
-            setTimeout(countdownLoop, 1000);
-        };
-        countdownLoop(); 
-    };
-
-    const startMarketEngine = () => {
-        if (isMarketEngineRunning) return;
-        isMarketEngineRunning = true;
-
-        currentPrices = { ...initialPrices };
-        renderMarket(currentPrices, {});
-        
-        const marketLoop = () => {
-            const prevPrices = { ...currentPrices };
-            lastPrevPrices = prevPrices; 
-            
-            for (const [ticker, price] of Object.entries(currentPrices)) {
-                // Изменяем волатильность: для очень дорогих акций она ниже
-                let maxChange = (price > 1000000) ? 0.03 : 0.05; 
-                let minChange = -maxChange;
-
-                const change = (Math.random() * (maxChange - minChange) + minChange); 
-                const newPrice = price * (1 + change);
-                currentPrices[ticker] = Math.max(newPrice, 0.01); 
-            }
-
-            renderMarket(currentPrices, prevPrices);
-            renderPortfolio(portfolio); 
-
-            const nextUpdate = Math.random() * PRICE_UPDATE_INTERVAL_MIN + PRICE_UPDATE_INTERVAL_MIN;
-            setTimeout(marketLoop, nextUpdate);
-        };
-        marketLoop(); 
-    };
-
-    const generateApartments = () => {
-        availableApartments = apartmentData.map(apt => {
-            let limit;
-            if (apt.key === 'LUXE' && Math.random() < 0.5) {
-                limit = 0;
-            } else {
-                limit = Math.floor(Math.random() * 5) + 1; 
-            }
-            
-            const fluctuation = (Math.random() * 0.2 - 0.1); 
-            const currentPrice = apt.basePrice * (1 + fluctuation);
-            
-            return {
-                ...apt,
-                currentPrice: Math.round(currentPrice / 100) * 100, 
-                availableLimit: limit
-            };
-        });
-        renderRealEstate();
-    }
-
-    const startRealEstateEngine = () => {
-        generateApartments(); 
-        
-        setInterval(() => {
-            generateApartments();
-            showMessage("Магазин квартир обновлен! Проверьте новые предложения.", 'warning');
-        }, REAL_ESTATE_REFRESH_INTERVAL);
-    }
-    
-    const startApartmentCountdown = () => {
-        apartmentTimerRemaining = REAL_ESTATE_REFRESH_INTERVAL / 1000; 
-
-        const countdownLoop = () => {
-            apartmentTimerRemaining--;
-
-            const minutes = Math.floor(apartmentTimerRemaining / 60);
-            const seconds = apartmentTimerRemaining % 60;
-
-            const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            apartmentCountdownEl.textContent = formattedTime;
-
-            if (apartmentTimerRemaining <= 0) {
-                apartmentTimerRemaining = REAL_ESTATE_REFRESH_INTERVAL / 1000;
-            }
-
-            setTimeout(countdownLoop, 1000);
-        };
-        countdownLoop(); 
-    };
-
-    /**
-     * Расчет дохода от квартир (использует новую фиксированную ставку 1.5%).
-     */
-    const calculateApartmentIncome = () => {
-        let totalIncome = 0;
-        const ownedProperties = portfolio.realEstate;
-        
-        for (const aptKey in ownedProperties) {
-            const ownedCount = ownedProperties[aptKey];
-            
-            if (ownedCount > 0) {
-                const aptData = apartmentData.find(a => a.key === aptKey);
-                if (aptData) {
-                    // Используем фиксированную ставку 1.5% от базовой цены
-                    const incomePerUnit = aptData.basePrice * APARTMENT_FIXED_INCOME_RATE; 
-                    const income = incomePerUnit * ownedCount;
-                    totalIncome += income;
-                }
-            }
-        }
-        
-        // Обновляем информацию о доходе (15 сек)
-        passiveIncomeInfoEl.textContent = `Доход (Квартиры): ${formatCurrency(totalIncome)} / 15 сек`;
-        return totalIncome;
-    }
-
-    const startApartmentIncomeEngine = () => {
-        let incomeCycleRemaining = PASSIVE_INCOME_INTERVAL / 1000;
-        
-        const incomeLoop = () => {
-            incomeCycleRemaining--;
-            incomeCountdownEl.textContent = String(incomeCycleRemaining).padStart(2, '0');
-
-            if (incomeCycleRemaining <= 0) {
-                const totalIncome = calculateApartmentIncome();
-
-                if (totalIncome > 0) {
-                    portfolio.balance += totalIncome;
-                    savePortfolio();
-                    showMessage(`Получен доход от квартир: +${formatCurrency(totalIncome)}`, 'success');
-                }
-                
-                incomeCycleRemaining = PASSIVE_INCOME_INTERVAL / 1000;
-            }
-            
-            setTimeout(incomeLoop, 1000);
-        };
-        incomeLoop(); 
-    }
-    
-    
-    // --- МЕХАНИЗМ: БИЗНЕС ---
-    
-    const calculateBusinessIncome = () => {
-        let totalIncome = 0;
-        
-        portfolio.businesses.forEach(business => {
-            // Бизнес использует фиксированную ставку BUSINESS_INCOME_RATE (0.90%)
-            const income = business.investment * BUSINESS_INCOME_RATE; 
-            totalIncome += income;
-        });
-        
-        // Обновляем информацию о доходе (18 сек)
-        businessIncomeInfoEl.textContent = `Доход (Бизнес): ${formatCurrency(totalIncome)} / 18 сек`;
-        return totalIncome;
-    }
-    
-    /**
-     * Отображает маленький значок дохода над иконкой "Бизнес" и анимирует его.
-     * Принимает опциональный кастомный текст для промо-бонуса.
-     */
-    const showIncomeBadge = (amount, customText = null) => {
-        const navButton = document.getElementById('nav-business');
-        const badgeText = customText || formatBadgeCurrency(amount);
-
-        const badge = document.createElement('span');
-        badge.textContent = badgeText;
-        badge.className = 'income-badge'; 
-        
-        // Если это промо, делаем его оранжевым
-        if (customText) badge.style.backgroundColor = 'var(--color-warning)'; 
-        
-        badge.style.transition = 'all 0.5s cubic-bezier(0.17, 0.84, 0.44, 1)'; 
-        badge.style.opacity = '1';
-
-        navButton.appendChild(badge);
-
-        // Анимация: двигаем вверх
-        setTimeout(() => {
-            badge.style.transform = 'translate(-50%, -20px)'; // Move up and out
-            badge.style.opacity = '0';
-        }, 50);
-
-        // Удаляем после завершения анимации
-        setTimeout(() => {
-            badge.remove();
-        }, 550); 
-    };
-
-    const startBusinessIncomeEngine = () => {
-        businessIncomeTimerRemaining = BUSINESS_INCOME_INTERVAL / 1000;
-        
-        const incomeLoop = () => {
-            businessIncomeTimerRemaining--;
-            businessCountdownEl.textContent = String(businessIncomeTimerRemaining).padStart(2, '0');
-
-            if (businessIncomeTimerRemaining <= 0) {
-                const totalIncome = calculateBusinessIncome();
-
-                if (totalIncome > 0) {
-                    portfolio.balance += totalIncome;
-                    savePortfolio();
-                    showIncomeBadge(totalIncome); 
-                }
-                
-                businessIncomeTimerRemaining = BUSINESS_INCOME_INTERVAL / 1000;
-            }
-            
-            setTimeout(incomeLoop, 1000);
-        };
-        incomeLoop();
-    }
-    
-    // ... (handleOpenBusiness, sellBusiness, sellApartment, buyAsset, sellAsset, buyApartment - БЕЗ ИЗМЕНЕНИЙ) ...
-    
-    /**
-     * Обрабатывает открытие нового бизнеса.
-     */
-    window.handleOpenBusiness = () => {
-        const nameInput = document.getElementById('business-name-input');
-        const investmentInput = document.getElementById('business-investment-input');
-        
-        const name = nameInput.value.trim() || "Неназванный Бизнес";
-        const investment = parseFloat(investmentInput.value);
-
-        if (portfolio.businesses.length >= MAX_BUSINESSES) {
-             showMessage(`Вы достигли лимита: можно иметь только ${MAX_BUSINESSES} бизнесов.`, 'error');
-             openBusinessBtn.disabled = true;
-             return;
-        }
-
-        if (isNaN(investment) || investment < 1) { // Проверка на положительное число (от 1 грн)
-            showMessage(`Сумма инвестиций должна быть положительным числом (минимум 1 грн).`, 'error');
-            return;
-        }
-
-        if (portfolio.balance < investment) {
-            showMessage("Недостаточно средств для открытия бизнеса.", 'error');
-            return;
-        }
-
-        // Вычет средств и добавление бизнеса
-        portfolio.balance -= investment;
-        
-        // Используем новую глобальную ставку
-        const incomePerCycle = investment * BUSINESS_INCOME_RATE; 
-
-        portfolio.businesses.push({
-            id: generateId(),
-            name: name,
-            investment: investment,
-            incomeRate: BUSINESS_INCOME_RATE, 
-            incomePerCycle: incomePerCycle
-        });
-
-        savePortfolio();
-        renderBusinessSection();
-        
-        // Сброс формы
-        nameInput.value = '';
-        investmentInput.value = '';
-
-        showMessage(`Бизнес "${name}" успешно открыт!`, 'success');
-        calculateBusinessIncome(); 
-    };
-    
-    /**
-     * Продажа бизнеса.
-     */
-    window.sellBusiness = (id, investment) => {
-        // 1. Находим индекс и сам бизнес
-        const businessIndex = portfolio.businesses.findIndex(b => b.id === id);
-        if (businessIndex === -1) {
-            showMessage("Ошибка: Бизнес не найден.", 'error');
-            return;
-        }
-        
-        const businessName = portfolio.businesses[businessIndex].name;
-        
-        // 2. Расчет цены продажи: (Инвестиции * [1.05 до 1.35] множитель)
-        const profitMultiplier = 1.05 + (Math.random() * 0.30); // 5% до 35% прибыли
-        const salePrice = investment * profitMultiplier;
-        
-        // 3. Добавляем средства и удаляем бизнес
-        portfolio.balance += salePrice;
-        portfolio.businesses.splice(businessIndex, 1);
-        
-        savePortfolio();
-        renderBusinessSection();
-        calculateBusinessIncome();
-        
-        const profit = salePrice - investment;
-        showMessage(`Бизнес "${businessName}" продан! Вы получили: ${formatCurrency(salePrice)}. Прибыль: ${formatCurrency(profit)}`, 'success');
-    };
-
-    /**
-     * НОВАЯ ФУНКЦИЯ: Продажа квартиры за 60% от базовой цены.
-     */
-    window.sellApartment = (key) => {
-        const ownedCount = portfolio.realEstate[key] || 0;
-        if (ownedCount <= 0) {
-            showMessage("У вас нет таких квартир для продажи.", 'error');
-            return;
-        }
-
-        const aptData = apartmentData.find(a => a.key === key);
-        if (!aptData) {
-            showMessage("Ошибка: Данные о квартире не найдены.", 'error');
-            return;
-        }
-
-        // 60% от БАЗОВОЙ цены (от которой считается доход)
-        const salePrice = aptData.basePrice * APARTMENT_SALE_FACTOR;
-        
-        portfolio.balance += salePrice;
-        portfolio.realEstate[key] -= 1;
-        
-        savePortfolio(); 
-        renderPortfolio(portfolio); // Перерисовываем инвентарь
-        calculateApartmentIncome(); 
-        showMessage(`Продана 1 шт. "${aptData.name}". Получено: ${formatCurrency(salePrice)} (60% от базовой цены).`, 'success');
-    };
-
-    window.buyAsset = (ticker, amount) => {
-        const price = currentPrices[ticker];
-        const cost = price * amount;
-
-        if (portfolio.balance < cost) {
-            showMessage("Недостаточно средств на балансе.", 'error');
-            return;
-        }
-        
-        if (marketLimits[ticker] < amount) {
-             showMessage(`Лимит на покупку ${ticker} исчерпан. Доступно: ${marketLimits[ticker]} шт.`, 'error');
-             return;
-        }
-
-        marketLimits[ticker] -= amount;
-
-        const currentItem = portfolio.inventory[ticker] || { quantity: 0, totalCost: 0 };
-
-        portfolio.balance -= cost;
-        currentItem.quantity += amount;
-        currentItem.totalCost += cost; 
-        portfolio.inventory[ticker] = currentItem;
-
-        savePortfolio(); 
-        renderMarket(currentPrices, lastPrevPrices); 
-        showMessage(`Куплено ${amount} шт. ${ticker} по цене ${formatCurrency(price)}. `, 'success');
-    };
-
-    window.sellAsset = (ticker, amount) => {
-        const price = currentPrices[ticker];
-        const revenue = price * amount;
-        
-        const currentItem = portfolio.inventory[ticker];
-        let ownedAmount = currentItem ? currentItem.quantity : 0;
-
-        if (ownedAmount < amount) {
-            showMessage(`У вас только ${ownedAmount} шт. ${ticker}. Недостаточно для продажи.`, 'error');
-            return;
-        }
-        
-        let costOfSoldShares = 0;
-        if (currentItem.quantity > 0 && currentItem.totalCost > 0) {
-            const avgPrice = currentItem.totalCost / currentItem.quantity;
-            costOfSoldShares = avgPrice * amount;
-        }
-
-        portfolio.balance += revenue;
-        currentItem.quantity -= amount;
-        currentItem.totalCost -= costOfSoldShares; 
-
-        if (currentItem.quantity <= 0) {
-            currentItem.quantity = 0;
-            currentItem.totalCost = 0;
-        } else if (currentItem.totalCost < 0) {
-             currentItem.totalCost = 0; 
-        }
-        
-        portfolio.inventory[ticker] = currentItem; 
-
-        savePortfolio(); 
-        showMessage(`Продано ${amount} шт. ${ticker} по цене ${formatCurrency(price)}. `, 'success');
-    };
-
-    window.buyApartment = (key) => {
-        const apt = availableApartments.find(a => a.key === key);
-        if (!apt) {
-            showMessage("Ошибка: Квартира не найдена в текущем магазине.", 'error');
-            return;
-        }
-        const cost = apt.currentPrice;
-
-        if (portfolio.balance < cost) {
-            showMessage("Недостаточно средств на балансе.", 'error');
-            return;
-        }
-        
-        if (apt.availableLimit <= 0) {
-             showMessage(`Лимит на покупку "${apt.name}" исчерпан в этом цикле.`, 'error');
-             return;
-        }
-
-        apt.availableLimit -= 1; 
-
-        portfolio.balance -= cost;
-        portfolio.realEstate[key] = (portfolio.realEstate[key] || 0) + 1;
-
-        savePortfolio(); 
-        renderRealEstate(); 
-        calculateApartmentIncome(); 
-        showMessage(`Куплена 1 шт. "${apt.name}" по цене ${formatCurrency(cost)}.`, 'success');
-    };
-
-
-    // --- НОВЫЙ МЕХАНИЗМ: ПРОМОКОД ---
-    
-    /**
-     * Обрабатывает ввод промокода.
-     */
-    window.handlePromoCode = () => {
-        const input = promoCodeInput.value.trim();
-        
-        if (isPromoActive) {
-            showMessage("Промокод уже активен!", 'warning');
-            return;
-        }
-
-        if (portfolio.promoCodeUsed) {
-            showMessage("Этот промокод уже был использован ранее. Он одноразовый.", 'error');
-            return;
-        }
-
-        if (input === TARGET_PROMO_CODE) {
-            // Активация
-            isPromoActive = true;
-            portfolio.promoCodeUsed = true; 
-            savePortfolio();
-            
-            showMessage(`Промокод активирован! Бизнес-бонус: +50% в секунду на 2 минуты!`, 'business');
-            
-            // Отключаем кнопку, чтобы избежать повторного ввода и блокируем поле
-            promoCodeSubmitButton.disabled = true;
-            promoCodeInput.disabled = true;
-            promoCodeInput.value = TARGET_PROMO_CODE; // Оставляем правильный код в поле
-            
-            startPromoIncomeEngine();
-            startPromoCountdown();
-            
-        } else {
-            showMessage("Неверный промокод.", 'error');
-        }
-    };
-    
-    /**
-     * Запускает таймер обратного отсчета бонуса.
-     */
-    let promoTimerRemaining = 0;
-    const startPromoCountdown = () => {
-        promoTimerRemaining = PROMO_DURATION_SECONDS; // Сброс на 120 секунд
-
-        const countdownLoop = () => {
-            if (!isPromoActive) {
-                // В этом месте не нужно повторно вызывать setTimeout, 
-                // так как интервал прекратится, когда isPromoActive станет false.
-                return;
-            }
-            
-            promoTimerRemaining--;
-
-            const minutes = Math.floor(promoTimerRemaining / 60);
-            const seconds = promoTimerRemaining % 60;
-
-            const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            currentPromoStatusEl.textContent = `Активен! Осталось: ${formattedTime}`;
-            promoTimerEl.textContent = formattedTime;
-            
-            currentPromoStatusEl.classList.remove('text-green-400', 'text-yellow-400', 'text-red-400', 'text-gray-400');
-            promoTimerEl.classList.remove('text-green-400', 'text-yellow-400', 'text-red-400', 'text-gray-400');
-
-            if (promoTimerRemaining <= 10) {
-                 currentPromoStatusEl.classList.add('text-red-400');
-                 promoTimerEl.classList.add('text-red-400');
-            } else if (promoTimerRemaining <= 30) {
-                 currentPromoStatusEl.classList.add('text-yellow-400');
-                 promoTimerEl.classList.add('text-yellow-400');
-            } else {
-                 currentPromoStatusEl.classList.add('text-green-400');
-                 promoTimerEl.classList.add('text-green-400');
-            }
-
-            if (promoTimerRemaining <= 0) {
-                // Завершение бонуса
-                isPromoActive = false;
-                if (promoIncomeInterval) {
-                     clearInterval(promoIncomeInterval);
-                     promoIncomeInterval = null;
-                }
-                currentPromoStatusEl.textContent = 'БОНУС ЗАВЕРШЕН. (Использован)';
-                promoTimerEl.textContent = '00:00';
-                showMessage("Время действия промокода истекло. Бонус отключен.", 'warning');
-                return;
-            }
-
-            setTimeout(countdownLoop, 1000);
-        };
-        countdownLoop();
-    };
-
-    /**
-     * Запускает механизм бонусного дохода (каждую секунду).
-     */
-    const startPromoIncomeEngine = () => {
-        // Убеждаемся, что предыдущий интервал остановлен
-        if (promoIncomeInterval) {
-            clearInterval(promoIncomeInterval);
-        }
-
-        promoIncomeInterval = setInterval(() => {
-            if (!isPromoActive) {
-                if (promoIncomeInterval) clearInterval(promoIncomeInterval);
-                return;
-            }
-
-            let totalPromoIncome = 0;
-
-            portfolio.businesses.forEach(business => {
-                // 50% от инвестиций в секунду
-                const income = business.investment * PROMO_INCOME_RATE_PER_SEC; 
-                totalPromoIncome += income;
-            });
-            
-            if (totalPromoIncome > 0) {
-                portfolio.balance += totalPromoIncome;
-                // Не сохраняем в localStorage каждую секунду, чтобы не нагружать браузер
-                // Сохранение произойдет в конце цикла или при других действиях.
-                
-                // Менее навязчивое оповещение
-                const badgeText = `+${formatBadgeCurrency(totalPromoIncome)} (PROMO)`;
-                showIncomeBadge(totalPromoIncome, badgeText); 
-            }
-
-        }, 1000); // 1 секунда
-    }
-    
     // --- ФУНКЦИИ РЕНДЕРИНГА UI ---
+    window.showSection = (id) => { document.querySelectorAll('.main-content-section').forEach(el=>el.classList.add('hidden')); document.querySelectorAll('#nav-bar button').forEach(el=>{el.classList.remove('nav-item-active','text-blue-400'); el.classList.add('text-gray-400');}); document.getElementById(`${id}-section`).classList.remove('hidden'); document.getElementById(`nav-${id.replace(/-/g,'')}`).classList.add('nav-item-active','text-blue-400'); if(id==='inventory') renderPortfolio(portfolio); if(id==='credits') renderCreditsSection(); };
+    const renderShop = (el, items, buyHandler, type) => { el.innerHTML = ''; items.sort((a,b)=>a.currentPrice-b.currentPrice).forEach(item => { const isAvailable = item.availableLimit > 0; const income = type==='Квартира' ? item.basePrice*APARTMENT_FIXED_INCOME_RATE : item.basePrice*TRANSPORT_INCOME_RATE; const incomeInterval = type==='Квартира' ? PASSIVE_INCOME_INTERVAL/1000 : TRANSPORT_INCOME_INTERVAL/1000; el.innerHTML += `<div class="flex flex-col sm:flex-row items-center justify-between p-4 bg-gray-700 rounded-lg"><div class="flex-grow mb-2 sm:mb-0"><p class="text-xl font-bold text-white">${item.name}</p><p class="text-lg font-semibold text-green-400 mt-1">${formatCurrency(item.currentPrice)}</p><p class="text-sm text-gray-400">Доход (${incomeInterval} сек): <span class="font-medium text-green-300">${formatCurrency(income)}</span></p><p class="text-sm font-medium ${isAvailable ? 'text-blue-300' : 'text-red-400 font-bold'} mt-1">${isAvailable ? `Доступно: ${item.availableLimit} шт.` : 'НЕДОСТУПНО'}</p></div><div class="flex space-x-3"><button onclick="${buyHandler}('${item.key}')" ${isAvailable ? '' : 'disabled'} class="btn-action btn-buy">Купить</button></div></div>`; }); };
+    const renderRealEstate = () => renderShop(apartmentListEl, availableApartments, 'buyApartment', 'Квартира');
+    const renderTransport = () => renderShop(transportListEl, availableTransport, 'buyTransport', 'Транспорт');
+    window.buyApartment = (key) => buyShopItem(key, availableApartments, portfolio.realEstate, 'Квартира');
+    window.buyTransport = (key) => buyShopItem(key, availableTransport, portfolio.transport, 'Транспорт');
+    window.sellApartment = (key) => sellShopItem(key, portfolio.realEstate, apartmentData, APARTMENT_SALE_FACTOR, 'Квартира');
+    window.sellTransport = (key) => sellShopItem(key, portfolio.transport, transportData, TRANSPORT_SALE_FACTOR, 'Транспорт');
+    const renderMarket = (prices, prevPrices) => { marketListEl.innerHTML = ''; Object.entries(prices).sort(([,a],[,b])=>b-a).forEach(([ticker,price])=>{ const name=assetNames[ticker]; const prev=prevPrices[ticker]||price; const diff=price-prev; const diffPercent=((diff/prev)*100).toFixed(2); const diffClass=diff>0?'price-up':(diff<0?'price-down':''); const diffSign=diff>=0?'▲':'▼'; const limit=marketLimits[ticker]||0; marketListEl.innerHTML+=`<div class="flex flex-col sm:flex-row items-center justify-between p-4 bg-gray-700 rounded-lg"><div class="flex-grow mb-2 sm:mb-0"><p class="text-xl font-bold text-white">${name} (${ticker})</p><div class="text-lg font-semibold flex items-center space-x-2"><span class="text-white ${diffClass} pr-2">${formatCurrency(price)}</span><span class="${diffClass} text-sm font-medium">(${diffSign} ${diffPercent}%)</span></div><p class="text-sm font-medium ${limit > 0 ? 'text-blue-300' : 'text-red-400 font-bold'} mt-1">${limit > 0 ? `Доступно: ${limit} шт.` : 'НЕДОСТУПНО'}</p></div><div class="flex space-x-3"><button onclick="buyAsset('${ticker}', 1)" ${limit>0?'':'disabled'} class="btn-action btn-buy">Купить (1 шт.)</button></div></div>`; }); };
+    const renderBusinessSection = () => { businessListEl.innerHTML = ''; const count = portfolio.businesses.length; businessCountEl.textContent = `${count}/${MAX_BUSINESSES}`; document.getElementById('open-business-btn').disabled = count >= MAX_BUSINESSES; if(count===0){businessListEl.innerHTML='<p class="text-gray-500">У вас нет бизнесов.</p>'; return;} portfolio.businesses.forEach(b => { const income = b.investment * BUSINESS_INCOME_RATE; businessListEl.innerHTML += `<div class="p-4 bg-gray-700 rounded-lg border-l-4 border-orange-500 flex flex-col md:flex-row justify-between items-start md:items-center"><div class="mb-3 md:mb-0"><p class="text-xl font-bold text-white">${b.name}</p><p class="text-md text-gray-400">Инвестиции: <span class="font-medium text-white">${formatCurrency(b.investment)}</span></p><p class="text-md font-medium text-green-300 mt-1">Прибыль (${BUSINESS_INCOME_INTERVAL/1000} сек): ${formatCurrency(income)}</p></div><button onclick="sellBusiness('${b.id}')" class="btn-action btn-sell-business text-sm">Продать</button></div>`; }); };
+    const renderCreditsSection = () => { if(portfolio.activeLoan) { creditStatusSection.innerHTML = `<h3 class="text-xl font-semibold mb-3">Активный Кредит</h3><div class="p-4 bg-gray-800 rounded-lg"><p class="text-gray-400">Сумма к погашению:</p><p class="text-2xl font-bold text-pink-400 mb-4">${formatCurrency(portfolio.activeLoan.debt)}</p><button onclick="handleRepayLoan()" class="btn-action btn-credit w-full">Погасить Кредит</button></div>`; takeCreditSection.classList.add('hidden'); } else { creditStatusSection.innerHTML = `<p class="text-gray-400">У вас нет активных кредитов. Вы можете взять новый.</p>`; takeCreditSection.classList.remove('hidden'); maxLoanAmountEl.textContent = formatCurrency(calculateMaxLoan()); } };
+    const renderPortfolio = (data) => { balanceEl.textContent = formatCurrency(data.balance); calculateApartmentIncome(); calculateBusinessIncome(); calculateTransportIncome(); if (portfolio.activeLoan && portfolio.balance > portfolio.activeLoan.debt) { forceSellOverlay.classList.add('hidden'); } inventoryListEl.innerHTML = ''; let hasInventory = false; const renderInventoryBlock = (title, items, dataList, sellHandler, saleFactor, color) => { const owned = Object.entries(items).filter(([,count])=>count>0); if(owned.length === 0) return ''; hasInventory=true; let markup = `<h3 class="text-xl font-semibold mb-3 text-${color}-400 border-b border-gray-700 pb-2">${title}</h3>`; owned.forEach(([key, count]) => { const itemData = dataList.find(i => i.key === key); if(!itemData) return; const salePrice = itemData.basePrice * saleFactor; markup += `<div class="p-4 bg-gray-700 rounded-lg border-l-4 border-${color}-500"><div class="flex justify-between items-start"><p class="text-xl font-bold text-white">${itemData.name}</p><p class="text-sm text-gray-400">Владеете: ${count} шт.</p></div><p class="text-sm text-gray-400 mt-1">Цена продажи (1 шт.): <span class="font-medium">${formatCurrency(salePrice)}</span></p><div class="mt-3 flex justify-end"><button onclick="${sellHandler}('${key}')" class="btn-action btn-sell text-sm">Продать 1 шт.</button></div></div>`; }); return markup + '<div class="h-6"></div>'; }; inventoryListEl.innerHTML += renderInventoryBlock('Мой Транспорт', data.transport, transportData, 'sellTransport', TRANSPORT_SALE_FACTOR, 'violet'); inventoryListEl.innerHTML += renderInventoryBlock('Моя Недвижимость', data.realEstate, apartmentData, 'sellApartment', APARTMENT_SALE_FACTOR, 'yellow'); const ownedStocks = Object.entries(data.inventory).filter(([,item])=>item.quantity > 0); if(ownedStocks.length > 0) { hasInventory=true; let markup='<h3 class="text-xl font-semibold mb-3 text-blue-400 border-b border-gray-700 pb-2">Мои Акции</h3>'; ownedStocks.sort(([a],[b])=>a.localeCompare(b)).forEach(([ticker,item])=>{ const price=currentPrices[ticker]||0; const currentValue=price*item.quantity; const avgPrice=item.quantity>0?item.totalCost/item.quantity:0; const profitLoss=currentValue-item.totalCost; const profitPercent=item.totalCost>0?((profitLoss/item.totalCost)*100).toFixed(2):0; const isProfit=profitLoss>0.01, isLoss=profitLoss<-0.01; const profitClass=isProfit?'text-green-400':(isLoss?'text-red-400':'text-gray-400'); markup+=`<div class="p-4 bg-gray-700 rounded-lg border-l-4 ${isProfit?'border-green-500':(isLoss?'border-red-500':'border-gray-500')}"><div class="flex justify-between items-center mb-1"><p class="text-xl font-bold text-white">${assetNames[ticker]} (${ticker})</p><p class="text-sm text-gray-400">${item.quantity} шт.</p></div><p class="text-md text-gray-300">Стоимость: ${formatCurrency(currentValue)}</p><p class="text-sm text-gray-400">Ср. цена покупки: ${formatCurrency(avgPrice)}</p><div class="mt-2 p-2 rounded-md ${isProfit?'bg-green-900/40':(isLoss?'bg-red-900/40':'bg-gray-800')}"><p class="font-semibold ${profitClass}">${profitLoss>=0?'Прибыль':'Убыток'}: ${formatCurrency(Math.abs(profitLoss))} (${profitPercent}%)</p></div><div class="mt-3 flex justify-end space-x-3"><button onclick="sellAsset('${ticker}',${item.quantity})" class="btn-action btn-sell-all text-sm">Продать ВСЕ</button><button onclick="sellAsset('${ticker}',1)" class="btn-action btn-sell text-sm">Продать 1</button></div></div>`;}); inventoryListEl.innerHTML+=markup; } if(!hasInventory) inventoryListEl.innerHTML = '<p class="text-gray-500 p-4">Портфель пуст.</p>'; };
 
-    window.showSection = (sectionId) => {
-        // Скрываем все секции
-        document.querySelectorAll('.main-content-section').forEach(el => el.classList.add('hidden'));
-        
-        // Сбрасываем стили кнопок навигации
-        document.querySelectorAll('#nav-bar button').forEach(el => el.classList.remove('nav-item-active', 'text-blue-400'));
-        document.querySelectorAll('#nav-bar button').forEach(el => el.classList.add('text-gray-400'));
-
-        // Показываем выбранную секцию и выделяем кнопку
-        const sectionEl = document.getElementById(`${sectionId}-section`);
-        const navButtonEl = document.getElementById(`nav-${sectionId.replace(/-/g, '')}`);
-
-        if (sectionEl) sectionEl.classList.remove('hidden');
-        if (navButtonEl) {
-             navButtonEl.classList.add('nav-item-active', 'text-blue-400');
-             navButtonEl.classList.remove('text-gray-400');
+    // --- ОПОВЕЩЕНИЕ ОБ ОБНОВЛЕНИИ ---
+    const checkVersionAndShowUpdate = () => {
+        const hasSeenUpdate = localStorage.getItem(LOCAL_STORAGE_KEY_UPDATE_SEEN);
+        if (!hasSeenUpdate) {
+            updateOverlay.classList.remove('hidden');
         }
-
-        // Обновляем данные при переключении
-        if (sectionId === 'inventory') {
-            renderPortfolio(portfolio);
-        } else if (sectionId === 'real-estate') {
-            renderRealEstate(); 
-        } else if (sectionId === 'business') {
-            renderBusinessSection(); 
-        } else if (sectionId === 'promocodes') {
-            renderPromocodeSection();
-        }
-    };
-    
-    /**
-     * Рендеринг секции промокода.
-     */
-    const renderPromocodeSection = () => {
-        // Обновляем статус промокода в UI при открытии вкладки
-        if (portfolio.promoCodeUsed) {
-            promoCodeInput.value = TARGET_PROMO_CODE;
-            promoCodeInput.disabled = true;
-            promoCodeSubmitButton.disabled = true;
-            promoCodeSubmitButton.textContent = 'ИСПОЛЬЗОВАН';
-            currentPromoStatusEl.textContent = 'Этот промокод уже был использован.';
-            currentPromoStatusEl.classList.add('text-red-400', 'font-bold');
-        } else {
-            promoCodeSubmitButton.disabled = isPromoActive;
-            promoCodeInput.disabled = isPromoActive;
-            promoCodeSubmitButton.textContent = isPromoActive ? 'БОНУС АКТИВЕН' : 'Активировать';
-            
-            if (!isPromoActive) {
-                currentPromoStatusEl.textContent = 'Ожидает активации. Бонус: +50%/сек на 2 минуты.';
-                currentPromoStatusEl.classList.add('text-gray-400');
-                currentPromoStatusEl.classList.remove('text-red-400', 'font-bold');
-            }
-        }
-    }
-
-
-    const renderMarket = (prices, prevPrices) => {
-        marketListEl.innerHTML = '';
-        const sortedTickers = Object.entries(prices)
-            .sort(([, priceA], [, priceB]) => priceB - priceA)
-            .map(([ticker]) => ticker);
-
-        sortedTickers.forEach(ticker => {
-            const price = prices[ticker];
-            const name = assetNames[ticker];
-            const prevPrice = prevPrices[ticker] || price;
-            const diff = price - prevPrice;
-            
-            const diffPercent = ((diff / prevPrice) * 100).toFixed(2);
-            const diffClass = diff > 0 ? 'price-up' : diff < 0 ? 'price-down' : 'text-gray-400';
-            const diffSign = diff >= 0 ? '▲' : '▼';
-            
-            const remainingLimit = marketLimits[ticker] || 0;
-            const isAvailable = remainingLimit > 0;
-            
-            const priceChangeMarkup = `<span class="${diffClass} text-sm font-medium transition-colors duration-500">(${diffSign} ${diffPercent}%)</span>`;
-            const tradeAmount = 1; 
-            
-            let limitMessage = '';
-            let limitClass = 'text-blue-300';
-            if (remainingLimit === 0) {
-                 limitMessage = 'НЕДОСТУПНО в этом цикле';
-                 limitClass = 'text-red-400 font-bold';
-            } else {
-                 limitMessage = `Доступно: ${remainingLimit} шт.`;
-            }
-
-            marketListEl.innerHTML += `
-                <div class="flex flex-col sm:flex-row items-center justify-between p-4 bg-gray-700 rounded-lg">
-                    <div class="flex-grow mb-2 sm:mb-0">
-                        <p class="text-xl font-bold text-white">${name} (${ticker})</p>
-                        <div class="text-lg font-semibold flex items-center space-x-2">
-                           <span class="text-white ${diffClass} pr-2 transition-all duration-500">${formatCurrency(price)}</span>
-                           ${priceChangeMarkup}
-                        </div>
-                        <p class="text-sm font-medium ${limitClass} mt-1">${limitMessage}</p>
-                    </div>
-                    
-                    <div class="flex space-x-3">
-                        <button onclick="buyAsset('${ticker}', ${tradeAmount})" 
-                                ${isAvailable ? '' : 'disabled'}
-                                class="btn-action btn-buy flex items-center">
-                            Купить (${tradeAmount} шт.)
-                        </button>
-                    </div>
-                </div>
-            `;
+        closeUpdateBtn.addEventListener('click', () => {
+            updateOverlay.classList.add('hidden');
+            localStorage.setItem(LOCAL_STORAGE_KEY_UPDATE_SEEN, 'true');
         });
-    };
-    
-    const renderRealEstate = () => {
-        apartmentListEl.innerHTML = '';
-        
-        if (availableApartments.length === 0) {
-            apartmentListEl.innerHTML = '<p class="text-gray-500 p-4">Магазин пуст. Ожидаем обновления ассортимента...</p>';
-            return;
-        }
-        
-        const sortedApartments = availableApartments.sort((a, b) => a.currentPrice - b.currentPrice);
-
-        sortedApartments.forEach(apt => {
-            const isAvailable = apt.availableLimit > 0;
-            const limitClass = isAvailable ? 'text-blue-300' : 'text-red-400 font-bold';
-            
-            // Используем фиксированную ставку 1.5% от базовой цены
-            const incomePerCycle = apt.basePrice * APARTMENT_FIXED_INCOME_RATE; 
-
-            apartmentListEl.innerHTML += `
-                <div class="flex flex-col sm:flex-row items-center justify-between p-4 bg-gray-700 rounded-lg">
-                    <div class="flex-grow mb-2 sm:mb-0">
-                        <p class="text-xl font-bold text-white">${apt.name}</p>
-                        <p class="text-lg font-semibold text-green-400 mt-1">${formatCurrency(apt.currentPrice)}</p>
-                        <!-- Доход (15 сек) -->
-                        <p class="text-sm text-gray-400">Доход (15 сек, 1.5%): <span class="font-medium text-green-300">${formatCurrency(incomePerCycle)}</span></p>
-                        <p class="text-sm font-medium ${limitClass} mt-1">
-                            ${isAvailable ? `Доступно: ${apt.availableLimit} шт.` : 'НЕДОСТУПНО в этом цикле'}
-                        </p>
-                    </div>
-                    
-                    <div class="flex space-x-3">
-                        <button onclick="buyApartment('${apt.key}')" 
-                                ${isAvailable ? '' : 'disabled'}
-                                class="btn-action btn-buy flex items-center">
-                            Купить
-                        </button>
-                    </div>
-                </div>
-            `;
-        });
-    };
-    
-    /**
-     * Рендерит список открытых бизнесов и обновляет лимит счетчика.
-     */
-    const renderBusinessSection = () => {
-        businessListEl.innerHTML = '';
-        const businessCount = portfolio.businesses.length;
-        
-        businessCountEl.textContent = `${businessCount}/${MAX_BUSINESSES}`;
-        
-        if (businessCount >= MAX_BUSINESSES) {
-            openBusinessBtn.disabled = true;
-            openBusinessBtn.textContent = 'Достигнут лимит (20)';
-        } else {
-            openBusinessBtn.disabled = false;
-            openBusinessBtn.textContent = 'Открыть Бизнес';
-        }
-
-        if (businessCount === 0) {
-             businessListEl.innerHTML = '<p class="text-gray-500">У вас пока нет бизнесов. Откройте новый, чтобы начать получать доход!</p>';
-             return;
-        }
-
-        portfolio.businesses.forEach(business => {
-            const incomeRate = (business.incomeRate * 100).toFixed(2); // Теперь 0.90
-            
-            businessListEl.innerHTML += `
-                <div class="p-4 bg-gray-700 rounded-lg border-l-4 border-orange-500 flex flex-col md:flex-row justify-between items-start md:items-center">
-                    <div class="mb-3 md:mb-0">
-                        <p class="text-xl font-bold text-white">${business.name}</p>
-                        <p class="text-md text-gray-400">Инвестиции: <span class="font-medium text-white">${formatCurrency(business.investment)}</span></p>
-                        <!-- Прибыль (0.90% / 18 сек) -->
-                        <p class="text-md font-medium text-green-300 mt-1">Прибыль (${incomeRate}% / 18 сек): ${formatCurrency(business.incomePerCycle)}</p>
-                    </div>
-                    <button onclick="sellBusiness('${business.id}', ${business.investment})" 
-                            class="btn-action btn-sell-business flex items-center text-sm">
-                        Продать Бизнес
-                    </button>
-                </div>
-            `;
-        });
-        
-    }
-
-
-    /**
-     * Рендерит данные портфеля (баланс, акции, квартиры, бизнес).
-     */
-    const renderPortfolio = (data) => {
-        balanceEl.textContent = formatCurrency(data.balance);
-        
-        // Пересчет и отображение доходов
-        calculateApartmentIncome();
-        calculateBusinessIncome();
-
-        inventoryListEl.innerHTML = '';
-        let hasInventory = false;
-        
-        // --- Рендеринг КВАРТИР ---
-        let apartmentListMarkup = '';
-        const ownedApartments = Object.entries(data.realEstate).filter(([, count]) => count > 0);
-        
-        if (ownedApartments.length > 0) {
-            hasInventory = true;
-            apartmentListMarkup += '<h3 class="text-xl font-semibold mb-3 text-yellow-400 border-b border-gray-700 pb-2">Моя Недвижимость</h3>';
-            
-            ownedApartments.forEach(([aptKey, count]) => {
-                const aptData = apartmentData.find(a => a.key === aptKey);
-                if (aptData) {
-                    // Используем фиксированную ставку 1.5%
-                    const totalIncome = aptData.basePrice * APARTMENT_FIXED_INCOME_RATE * count;
-                    // Рассчитываем 60% от базовой цены для продажи (для информации)
-                    const potentialSalePrice = aptData.basePrice * APARTMENT_SALE_FACTOR;
-
-                    apartmentListMarkup += `
-                        <div class="p-4 bg-gray-700 rounded-lg border-l-4 border-yellow-500">
-                            <div class="flex justify-between items-start">
-                                <p class="text-xl font-bold text-white">${aptData.name}</p>
-                                <p class="text-sm text-gray-400">Владеете: ${count} шт.</p>
-                            </div>
-                            <!-- Общий доход (15 сек) -->
-                            <p class="text-md font-medium text-green-300 mt-2">Общий доход (15 сек): ${formatCurrency(totalIncome)}</p>
-                            <p class="text-sm text-gray-400">Цена продажи (60%): <span class="font-medium">${formatCurrency(potentialSalePrice)}</span></p>
-                            
-                            <div class="mt-3 flex justify-end space-x-3">
-                                <!-- Кнопка: Продать 1 шт. -->
-                                <button onclick="sellApartment('${aptKey}')" 
-                                        class="btn-action btn-sell-apartment flex items-center text-sm">
-                                    Продать 1 шт.
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-            apartmentListMarkup += '<div class="h-6"></div>';
-        }
-        inventoryListEl.innerHTML += apartmentListMarkup;
-        
-        // --- Рендеринг БИЗНЕСА ---
-        let businessListMarkup = '';
-        if (data.businesses.length > 0) {
-            hasInventory = true;
-            businessListMarkup += '<h3 class="text-xl font-semibold mb-3 text-orange-400 border-b border-gray-700 pb-2">Мои Бизнесы</h3>';
-            
-            data.businesses.forEach(business => {
-                const incomeRate = (business.incomeRate * 100).toFixed(2); 
-                businessListMarkup += `
-                    <div class="p-4 bg-gray-700 rounded-lg border-l-4 border-orange-500">
-                        <p class="text-xl font-bold text-white">${business.name}</p>
-                        <p class="text-sm text-gray-400">Инвестировано: ${formatCurrency(business.investment)}</p>
-                         <!-- Прибыль (18 сек) -->
-                        <p class="text-md font-medium text-green-300 mt-2">Прибыль (${incomeRate}% / 18 сек): ${formatCurrency(business.incomePerCycle)}</p>
-                        <!-- Кнопка продажи бизнеса видна только в разделе Бизнес, а не в Инвентаре для чистоты -->
-                    </div>
-                `;
-            });
-            businessListMarkup += '<div class="h-6"></div>';
-        }
-        inventoryListEl.innerHTML += businessListMarkup;
-
-
-        // --- Рендеринг АКЦИЙ ---
-        
-        let stockListMarkup = '';
-        const ownedStocks = Object.entries(data.inventory).filter(([, item]) => 
-            typeof item === 'object' && item !== null && item.quantity > 0
-        );
-
-        if (ownedStocks.length > 0) {
-            hasInventory = true;
-            stockListMarkup += '<h3 class="text-xl font-semibold mb-3 text-blue-400 border-b border-gray-700 pb-2">Мои Акции</h3>';
-            
-            ownedStocks.sort(([tickerA], [tickerB]) => tickerA.localeCompare(tickerB)).forEach(([ticker, item]) => {
-                
-                const quantity = item.quantity;
-                const totalCost = item.totalCost;
-                const price = currentPrices[ticker] || 0;
-                const name = assetNames[ticker];
-                const tradeAmount = 1;
-                const currentValue = price * quantity;
-                const avgPrice = totalCost / quantity;
-                const profitLoss = currentValue - totalCost;
-                const profitPercent = ((profitLoss / totalCost) * 100).toFixed(2);
-                const isProfitable = profitLoss > 0.01; 
-                const isLoss = profitLoss < -0.01;
-                const profitLossClass = isProfitable ? 'text-green-400 border-green-500' : 
-                                      (isLoss ? 'text-red-400 border-red-500' : 'text-gray-400 border-gray-600');
-                const backgroundColor = isProfitable ? 'bg-green-900/40' : (isLoss ? 'bg-red-900/40' : 'bg-gray-800');
-                let sellAdvice = 'Нейтрально';
-                if (isProfitable) sellAdvice = 'Выгодно продать';
-                if (isLoss) sellAdvice = 'Убыток (не выгодно)';
-
-
-                stockListMarkup += `
-                    <div class="p-4 bg-gray-700 rounded-lg border-l-4 ${isProfitable ? 'border-green-500' : (isLoss ? 'border-red-500' : 'border-gray-500')}">
-                        <div class="flex justify-between items-center mb-1">
-                            <p class="text-xl font-bold text-white">${name} (${ticker})</p>
-                            <p class="text-sm text-gray-400">Владеете: ${quantity} шт.</p>
-                        </div>
-                        
-                        <p class="text-md font-medium text-gray-300">Текущая стоимость: ${formatCurrency(currentValue)}</p>
-                        <p class="text-sm text-gray-400">Средняя цена покупки: ${formatCurrency(avgPrice)}</p>
-                        
-                        <div class="mt-2 p-2 rounded-md ${backgroundColor} flex justify-between items-center">
-                            <p class="text-sm font-semibold ${profitLossClass.split(' ')[0]}">
-                                ${profitLoss >= 0 ? 'Прибыль' : 'Убыток'}: ${formatCurrency(Math.abs(profitLoss))} (${profitPercent}%)
-                            </p>
-                            <span class="text-xs font-bold ${profitLossClass.split(' ')[0]}">${sellAdvice}</span>
-                        </div>
-
-                        <div class="mt-3 flex justify-end space-x-3">
-                            <!-- Кнопка: Продать ВСЕ -->
-                            <button onclick="sellAsset('${ticker}', ${quantity})" 
-                                    class="btn-action btn-sell-all flex items-center text-sm">
-                                Продать ВСЕ (${quantity} шт.)
-                            </button>
-                            <!-- Кнопка: Продать 1 шт. -->
-                            <button onclick="sellAsset('${ticker}', ${tradeAmount})" 
-                                    class="btn-action btn-sell flex items-center text-sm">
-                                Продать (${tradeAmount} шт.)
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-        inventoryListEl.innerHTML += stockListMarkup;
-
-
-        if (!hasInventory) {
-            inventoryListEl.innerHTML = '<p class="text-gray-500 p-4">Портфель пуст. Купите что-нибудь на бирже, недвижимость или откройте свой бизнес!</p>';
-        }
     };
 
     // --- ЗАПУСК ПРИЛОЖЕНИЯ ---
-
     const setupApp = () => {
+        checkVersionAndShowUpdate();
         setupUser();      
         loadPortfolio();  
         startMarketEngine();        
         startStockLimitEngine();    
-        startStockCountdown();      
-        startRealEstateEngine();    
-        startApartmentCountdown();  
-        startApartmentIncomeEngine(); 
-        startBusinessIncomeEngine(); 
-        
-        // Проверка статуса промокода на старте
-        if (portfolio.promoCodeUsed) {
-            promoCodeInput.value = TARGET_PROMO_CODE;
-            promoCodeInput.disabled = true;
-            promoCodeSubmitButton.disabled = true;
-            promoCodeSubmitButton.textContent = 'ИСПОЛЬЗОВАН';
-            promoTimerEl.textContent = 'ИСПОЛЬЗОВАН';
-            promoTimerEl.classList.remove('text-yellow-400', 'text-green-400');
-            promoTimerEl.classList.add('text-red-600', 'font-bold');
-            currentPromoStatusEl.textContent = 'Этот промокод уже был использован.';
-            currentPromoStatusEl.classList.add('text-red-400', 'font-bold');
-        } else {
-             promoTimerEl.textContent = 'В ОЖИДАНИИ';
-             promoTimerEl.classList.add('text-gray-400');
-             currentPromoStatusEl.textContent = 'Ожидает активации. Бонус: +50%/сек на 2 минуты.';
-        }
+        startStoreEngine(REAL_ESTATE_REFRESH_INTERVAL, apartmentCountdownEl, generateApartments);
+        startStoreEngine(TRANSPORT_REFRESH_INTERVAL, transportStoreCountdownEl, generateTransport);
+        startIncomeEngine(PASSIVE_INCOME_INTERVAL, incomeCountdownEl, calculateApartmentIncome, passiveIncomeInfoEl, ``, 'Квартиры');
+        startIncomeEngine(BUSINESS_INCOME_INTERVAL, businessCountdownEl, calculateBusinessIncome, businessIncomeInfoEl, ``, 'Бизнес');
+        startIncomeEngine(TRANSPORT_INCOME_INTERVAL, transportCountdownEl, calculateTransportIncome, transportIncomeInfoEl, ``, 'Транспорт');
+        startLoanEngine();
         
         showSection('market'); 
 
@@ -1634,3 +425,4 @@
 </script>
 </body>
 </html>
+
