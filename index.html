@@ -310,9 +310,11 @@
     const initialRealEstate = apartmentData.reduce((acc, apt) => ({ ...acc, [apt.key]: 0 }), {});
     const initialTransport = transportData.reduce((acc, v) => ({ ...acc, [v.key]: 0 }), {});
     
-    // Ключи Local Storage
-    const LOCAL_STORAGE_KEY_PORTFOLIO = 'stockSimPortfolio_v2';
-    const LOCAL_STORAGE_KEY_USERID = 'stockSimUserId';
+    // --- УПРАВЛЕНИЕ СОХРАНЕНИЯМИ (LOCAL STORAGE) ---
+    // Определяем уникальные ключи для хранения данных в браузере.
+    // Это позволяет игре "запоминать" ваш прогресс.
+    const LOCAL_STORAGE_KEY_PORTFOLIO = 'stockSimPortfolio_v2'; // Ключ для сохранения всех данных портфеля
+    const LOCAL_STORAGE_KEY_USERID = 'stockSimUserId'; // Ключ для сохранения ID пользователя
     
     // UI Элементы
     const appContainer = document.getElementById('app-container'), loadingOverlay = document.getElementById('loading-overlay');
@@ -339,10 +341,51 @@
     const formatCurrency = (amount) => (amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ")+' грн');
     const formatTime = (seconds) => `${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;
 
-    // --- LOCAL STORAGE ---
-    const loadPortfolio = () => { const storedData = localStorage.getItem(LOCAL_STORAGE_KEY_PORTFOLIO); let loaded = storedData ? JSON.parse(storedData) : {}; portfolio = { balance: loaded.balance || initialBalance, inventory: { ...initialInventory, ...loaded.inventory }, realEstate: { ...initialRealEstate, ...loaded.realEstate }, businesses: Array.isArray(loaded.businesses) ? loaded.businesses : [], transport: { ...initialTransport, ...loaded.transport }, activeLoan: loaded.activeLoan || null }; renderPortfolio(portfolio); };
-    const savePortfolio = () => { localStorage.setItem(LOCAL_STORAGE_KEY_PORTFOLIO, JSON.stringify(portfolio)); renderPortfolio(portfolio); };
-    const setupUser = () => { let id=localStorage.getItem(LOCAL_STORAGE_KEY_USERID); if(!id){id='LOCAL-'+Math.random().toString(36).substring(2,9).toUpperCase(); localStorage.setItem(LOCAL_STORAGE_KEY_USERID,id);} userId=id; userIdEl.textContent=userId; };
+    // --- ФУНКЦИИ СОХРАНЕНИЯ И ЗАГРУЗКИ (LOCAL STORAGE) ---
+
+    // Функция для загрузки данных игры из Local Storage при запуске
+    const loadPortfolio = () => {
+        // Получаем сохраненные данные из Local Storage по ключу
+        const storedData = localStorage.getItem(LOCAL_STORAGE_KEY_PORTFOLIO);
+        // Если данные есть, парсим их из формата JSON. Если нет - создаем пустой объект
+        let loaded = storedData ? JSON.parse(storedData) : {};
+        // Заполняем основной объект 'portfolio' загруженными данными.
+        // Если каких-то данных нет, используются значения по умолчанию (например, стартовый баланс).
+        // Это обеспечивает сохранение прогресса между сессиями.
+        portfolio = {
+            balance: loaded.balance ?? initialBalance, // Загружаем баланс или ставим начальный
+            inventory: { ...initialInventory, ...loaded.inventory }, // Загружаем акции
+            realEstate: { ...initialRealEstate, ...loaded.realEstate }, // Загружаем недвижимость
+            businesses: Array.isArray(loaded.businesses) ? loaded.businesses : [], // Загружаем бизнесы
+            transport: { ...initialTransport, ...loaded.transport }, // Загружаем транспорт
+            activeLoan: loaded.activeLoan || null // Загружаем информацию о кредите
+        };
+        // Обновляем отображение на экране
+        renderPortfolio(portfolio);
+    };
+
+    // Функция для сохранения текущего состояния игры в Local Storage
+    const savePortfolio = () => {
+        // Преобразуем объект 'portfolio' в строку формата JSON и сохраняем в Local Storage.
+        // Эта функция вызывается каждый раз, когда меняются данные игрока (покупка, продажа, доход).
+        localStorage.setItem(LOCAL_STORAGE_KEY_PORTFOLIO, JSON.stringify(portfolio));
+        // Обновляем отображение на экране, чтобы показать актуальные данные
+        renderPortfolio(portfolio);
+    };
+
+    // Функция для установки ID пользователя
+    const setupUser = () => {
+        // Пытаемся загрузить ID пользователя из Local Storage
+        let id = localStorage.getItem(LOCAL_STORAGE_KEY_USERID);
+        // Если ID не найден (первый запуск), генерируем новый и сохраняем его
+        if (!id) {
+            id = 'LOCAL-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+            localStorage.setItem(LOCAL_STORAGE_KEY_USERID, id);
+        }
+        userId = id;
+        userIdEl.textContent = userId;
+    };
+
 
     // --- ДВИЖКИ ДОХОДОВ ---
     const startIncomeEngine = (interval, countdownEl, calculationFunc, infoEl, infoText, incomeType) => { let timer = interval / 1000; const loop = () => { timer--; countdownEl.textContent = String(timer).padStart(2, '0'); if (timer <= 0) { const income = calculationFunc(); if (income > 0) { portfolio.balance += income; savePortfolio(); showMessage(`Доход (${incomeType}): +${formatCurrency(income)}`, 'success'); } timer = interval / 1000; } setTimeout(loop, 1000); }; loop(); };
@@ -425,4 +468,3 @@
 </script>
 </body>
 </html>
-
